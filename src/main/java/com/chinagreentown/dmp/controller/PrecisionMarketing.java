@@ -8,6 +8,7 @@ import com.chinagreentown.dmp.pojo.precisionmarketing.Shopping;
 import com.chinagreentown.dmp.pojo.precisionmarketing.UserPortrait;
 import com.chinagreentown.dmp.pojo.precisionmarketing.Purchase;
 import com.chinagreentown.dmp.service.QueryService;
+import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,5 +102,15 @@ public class PrecisionMarketing {
             System.out.println(p);
         }
         return list.toString();
+    }
+
+
+    @RequestMapping(value = "/v1.0")
+    public ResponseEntity<Map<String,Object>> getUser() {
+        List<PeopleDto> list = queryService.query("liming5", "liming6");
+        for (PeopleDto p : list) {
+            System.out.println(p);
+        }
+       return  ResponseEntity.ok(Maps.newHashMap());
     }
 }
