@@ -1,12 +1,12 @@
 package com.chinagreentown.dmp.service;
 
 import com.chinagreentown.dmp.api.HbaseTemplate;
+import com.chinagreentown.dmp.pojo.PeopleDto;
 import com.chinagreentown.dmp.pojo.UserInfo;
 import com.chinagreentown.dmp.pojo.datacenter.NetBehavior;
-import com.chinagreentown.dmp.pojo.PeopleDto;
 import com.chinagreentown.dmp.pojo.datacenter.UserBaseInfo;
 import com.chinagreentown.dmp.util.FakeData;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Scan;
@@ -14,10 +14,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -113,6 +110,89 @@ public class QueryService {
         return netBehavior;
     }
 
+    /**
+     * @return
+     * @description 组织生活坐标数据
+     */
+    public Map<String, String> getLiveMaps(int code) {
+        HashMap<String, String> map = Maps.newHashMap();
+        for (int i = 0; i < (code % 3) + 1; i++) {
+            String phonenum = FakeData.getPhoneList().get((code + i) % 5);
+            String ma5Phone = FakeData.getMa5Phone(phonenum);
+            String live = FakeData.getlive(phonenum);
+            map.put(ma5Phone, live);
+        }
+        return map;
+    }
 
+    /**
+     * @return
+     * @description 组织生活坐标数据
+     */
+    public Map<String, String> getworkMaps(int code) {
+        HashMap<String, String> map = Maps.newHashMap();
+        for (int i = 0; i < (code % 3) + 2; i++) {
+            String phonenum = FakeData.getPhoneList().get((code + i) % 5);
+            String ma5Phone = FakeData.getMa5Phone(phonenum);
+            String live = FakeData.getwork(phonenum);
+            map.put(ma5Phone, live);
+        }
+        return map;
+    }
+
+    public Map<String, Object> getEsatUserLabelMaps(int code) {
+        HashMap<String, Object> returnmap = Maps.newHashMap();
+        HashMap<String, Object> map1 = Maps.newHashMap();
+        HashMap<String, Object> map2 = Maps.newHashMap();
+        for (int i = 0; i < (code % 3) + 2; i++) {
+            String phonenum = FakeData.getPhoneList().get((code + i) % 5);
+            String ma5Phone = FakeData.getMa5Phone(phonenum);
+            if (i % 2 == 0) {
+                map1.put(ma5Phone, this.getlabelUserinfo(phonenum));
+            }
+            map2.put(ma5Phone, this.getlabelUserinfo(phonenum));
+        }
+        returnmap.put("owner",map1);
+        returnmap.put("intentUser",map1);
+        return returnmap;
+    }
+
+    public Map<String, Object> getlabelUserinfo(String phonenum) {
+        HashMap<String, Object> returnMap = Maps.newLinkedHashMap();
+        HashMap<String, Object> userMap = Maps.newLinkedHashMap();
+        userMap.put(FakeData.LabelKey.BASENAME.toString(), FakeData.getname(phonenum));
+        userMap.put(FakeData.LabelKey.BASEPHONE.toString(), FakeData.getMa5Phone(phonenum));
+        userMap.put(FakeData.LabelKey.BASELIVEAREA.toString(), FakeData.getlive(phonenum));
+        userMap.put(FakeData.LabelKey.BASEWORKAREA.toString(), FakeData.getwork(phonenum));
+        HashMap<String, Object> arainfo = Maps.newLinkedHashMap();
+        String arealabel = FakeData.getArealabel(phonenum);
+        arainfo.put(arealabel, FakeData.getAreaname(arealabel));
+        userMap.put(arealabel, arainfo);
+        HashMap<String, Object> ageinfo = Maps.newLinkedHashMap();
+        String ageLabel = FakeData.getAgeLabel(phonenum);
+        String age = FakeData.getAge(phonenum);
+        ageinfo.put(ageLabel, age);
+        userMap.put(ageLabel, ageinfo);
+        Map<String, Object> comMap = FakeData.getComMap(phonenum);
+        LinkedHashMap<String, Object> con = Maps.newLinkedHashMap();
+        String getconlabel = FakeData.getconlabel(phonenum);
+        String getcon = FakeData.getcon(phonenum);
+        con.put(getconlabel, getcon);
+        con.put("GT10CON001", "最近一个月话费");
+        LinkedHashMap<String, Object> phone = Maps.newLinkedHashMap();
+        String phoneband = FakeData.getPhoneBand(phonenum);
+        String phonelabel = FakeData.getPhoneBandLabel(phonenum);
+        phone.put(phonelabel, phoneband);
+        phone.put("GT04002001TER02", "移动");
+        LinkedHashMap<String, Object> netmap = Maps.newLinkedHashMap();
+        netmap.put("GT04001003GU001", FakeData.getAssertmap(phonenum));
+        netmap.put("GT04002003CU002", FakeData.getSportmap(phonenum));
+        returnMap.put(FakeData.LabelKey.BASE.toString(), userMap);
+        returnMap.put("GT09COM", comMap);
+        returnMap.put(getconlabel, con);
+        returnMap.put(phonelabel, phone);
+        returnMap.put("netBehavior", netmap);
+        return returnMap;
+    }
 
 }
