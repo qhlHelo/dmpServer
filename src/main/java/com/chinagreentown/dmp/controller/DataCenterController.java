@@ -44,7 +44,7 @@ public class DataCenterController {
                     if (!ma5Phone.isEmpty()) {
                         list.put(ma5Phone, query.getUserBaseInfo(str));
                     } else {
-                        list.put(str,"");
+                        list.put(str, FakeData.HttpStr.PHONEERROR);
                     }
                 }
                 return ResponseEntity.ok(list);
