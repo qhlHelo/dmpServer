@@ -79,29 +79,29 @@ public class SalesCenterController {
      */
     @RequestMapping(value = "/wifi/v1.0", method = RequestMethod.POST)
     public ResponseEntity<Object> wifiReportV1(@RequestParam(value = "phonenum", required = false) String phonenum,
-                                                 @RequestParam(value = "token") String token,
-                                                 @RequestParam(value = "phonebrand") String phonebrand,
-                                                 @RequestParam(value = "mac") String macaddress,
-                                                 @RequestParam(value = "salescenterid") String salescenterid,
-                                                 @RequestParam(value = "time") String time, @RequestParam(value = "date") String date) {
+                                               @RequestParam(value = "token") String token,
+                                               @RequestParam(value = "phonebrand") String phonebrand,
+                                               @RequestParam(value = "mac") String macaddress,
+                                               @RequestParam(value = "salescenterid") String salescenterid,
+                                               @RequestParam(value = "time") String time, @RequestParam(value = "date") String date) {
         try {
             HashMap<String, String> map = Maps.newHashMap();
-            if (token.equals("test") && null != phonebrand && null != salescenterid && null != time&&null!=date) {
+            if (token.equals("test") && null != phonebrand && null != salescenterid && null != time && null != date) {
                 BaseInfo baseInfo = new BaseInfo();
                 if (null == phonenum) {
                     int a = phonebrand.length() * 199;
-                    phonenum = FakeData.getPhoneList().get(a%5);
+                    phonenum = FakeData.getPhoneList().get(a % 5);
                 }
                 String ma5Phone = FakeData.getMa5Phone(phonenum);
                 if (!ma5Phone.isEmpty()) {
                     long l = Long.parseLong(phonenum);
                     baseInfo.setPhonenum(ma5Phone);
                     Long i = l % 199;
-                    baseInfo.setSalesnum(FakeData.getPhoneList().get(i.intValue()%5));
+                    baseInfo.setSalesnum(FakeData.getPhoneList2().get(i.intValue() % 5));
                     // 对象创建成功，响应201
                     return ResponseEntity.status(HttpStatus.CREATED).body(baseInfo);
                 }
-                map.put(phonenum,"phone error");
+                map.put(phonenum, "phone error");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
             }
             map.put("Reason", "parameter error");
@@ -146,40 +146,40 @@ public class SalesCenterController {
     /**
      * 车牌上报
      *
-     * @param phonenum
-     * @param token
-     * @param platenum
+     * @param phonenum      电话号码
+     * @param token         校验参数
+     * @param platenum      车牌号码
      * @param salescenterid
-     * @param time
+     * @param time          时间
      * @return ResponseEntity<BaseInfo>
      * @Version 1.0
      * @Date 时间格式20170410
      */
     @RequestMapping(value = "/licencePlate/v1.0", method = RequestMethod.POST)
     public ResponseEntity<Object> licencePlateV1(@RequestParam(value = "phonenum", required = false) String phonenum,
-                                                   @RequestParam(value = "token") String token,
-                                                   @RequestParam(value = "platenum") String platenum,
-                                                   @RequestParam(value = "salescenterid") String salescenterid,
-                                                   @RequestParam(value = "time") String time,
-                                                   @RequestParam(value = "date") String date) {
+                                                 @RequestParam(value = "token") String token,
+                                                 @RequestParam(value = "platenum") String platenum,
+                                                 @RequestParam(value = "salescenterid") String salescenterid,
+                                                 @RequestParam(value = "time") String time,
+                                                 @RequestParam(value = "date") String date) {
         try {
             HashMap<String, String> map = Maps.newHashMap();
-            if (token.equals("test") && null != platenum && null != salescenterid && null != time&&null!=date) {
+            if (token.equals("test") && null != platenum && null != salescenterid && null != time && null != date) {
                 BaseInfo baseInfo = new BaseInfo();
                 if (null == phonenum) {
                     int a = platenum.length() * 199;
-                    phonenum = FakeData.getPhoneList().get(a%5);
+                    phonenum = FakeData.getPhoneList().get(a % 5);
                 }
                 String ma5Phone = FakeData.getMa5Phone(phonenum);
                 if (!ma5Phone.isEmpty()) {
                     long l = Long.parseLong(phonenum);
                     baseInfo.setPhonenum(ma5Phone);
                     Long i = l % 199;
-                    baseInfo.setSalesnum(FakeData.getPhoneList2().get(i.intValue()%5));
+                    baseInfo.setSalesnum(FakeData.getPhoneList2().get(i.intValue() % 5));
                     // 对象创建成功，响应201
                     return ResponseEntity.status(HttpStatus.CREATED).body(baseInfo);
                 }
-                map.put(phonenum,"phone error");
+                map.put(phonenum, "phone error");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
             }
             map.put("Reason", "parameter error");
@@ -244,22 +244,22 @@ public class SalesCenterController {
                                        @RequestParam(value = "date") String date) {
         try {
             HashMap<String, String> map = Maps.newHashMap();
-            if (token.equals("test") && null != faceurl && null != salescenterid && null != time&&null!=date) {
+            if (token.equals("test") && null != faceurl && null != salescenterid && null != time && null != date) {
                 BaseInfo baseInfo = new BaseInfo();
                 if (null == phonenum) {
                     int a = faceurl.length() * 199;
-                    phonenum = FakeData.getPhoneList().get(a%5);
+                    phonenum = FakeData.getPhoneList().get(a % 5);
                 }
                 String ma5Phone = FakeData.getMa5Phone(phonenum);
                 if (!ma5Phone.isEmpty()) {
                     long l = Long.parseLong(phonenum);
                     baseInfo.setPhonenum(ma5Phone);
-                    long i = l % 199;
-                    baseInfo.setSalesnum(String.valueOf(i));
+                    Long i = l % 199;
+                    baseInfo.setSalesnum(FakeData.getPhoneList2().get(i.intValue() % 5));
                     // 对象创建成功，响应201
                     return ResponseEntity.status(HttpStatus.CREATED).body(baseInfo);
                 }
-                map.put(phonenum,"phone error");
+                map.put(phonenum, "phone error");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
             }
             map.put("Reason", "parameter error");
@@ -317,7 +317,7 @@ public class SalesCenterController {
      * @Version 1.0
      * @date 时间格式20170410
      */
-    @RequestMapping(value = "/label/v1.0", method = RequestMethod.GET)
+    @RequestMapping(value = "/label/v1.0", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> getSalesLabelV1(@RequestParam(value = "phonenum") String phonenum,
                                                                @RequestParam(value = "token") String token,
                                                                @RequestParam(value = "date") String date) {

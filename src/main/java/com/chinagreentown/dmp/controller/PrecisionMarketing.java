@@ -8,6 +8,7 @@ import com.chinagreentown.dmp.pojo.precisionmarketing.Shopping;
 import com.chinagreentown.dmp.pojo.precisionmarketing.UserPortrait;
 import com.chinagreentown.dmp.pojo.precisionmarketing.Purchase;
 import com.chinagreentown.dmp.service.QueryService;
+import com.chinagreentown.dmp.util.FakeData;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ import java.util.Map;
  * 精准营销相关接口
  */
 @RestController
-@RequestMapping("precisionmarketing/label")
+@RequestMapping("precisionmarketing")
 public class PrecisionMarketing {
 
     @Autowired
@@ -106,11 +107,121 @@ public class PrecisionMarketing {
 
 
     @RequestMapping(value = "/v1.0")
-    public ResponseEntity<Map<String,Object>> getUser() {
+    public ResponseEntity<Map<String, Object>> getUser() {
         List<PeopleDto> list = queryService.query("liming5", "liming6");
         for (PeopleDto p : list) {
             System.out.println(p);
         }
-       return  ResponseEntity.ok(Maps.newHashMap());
+        return ResponseEntity.ok(Maps.newHashMap());
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/workplacehot/v1.0")
+    public ResponseEntity<Object> getWorkssPlace(@RequestParam(value = "estatecode") String estatecode,
+                                                 @RequestParam(value = "token") String token,
+                                                 @RequestParam(value = "date") String date) {
+        try {
+            if (null != estatecode && token.equals("test") && null != date) {
+                if (FakeData.isNum(estatecode)) {
+                    Map<String, String> liveMaps = queryService.getworkMaps(Integer.parseInt(estatecode));
+                    return ResponseEntity.ok(liveMaps);
+                }
+            }
+            HashMap<String, String> Map = Maps.newHashMap();
+            Map.put("Reason", FakeData.HttpStr.PARAMETERERROR.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/liveplacehot/v1.0")
+    public ResponseEntity<Object> getlivePlace(@RequestParam(value = "estatecode") String estatecode,
+                                               @RequestParam(value = "token") String token,
+                                               @RequestParam(value = "date") String date) {
+        try {
+            if (null != estatecode && token.equals("test") && null != date) {
+                if (FakeData.isNum(estatecode)) {
+                    Map<String, String> liveMaps = queryService.getLiveMaps(Integer.parseInt(estatecode));
+                    return ResponseEntity.ok(liveMaps);
+                }
+            }
+            HashMap<String, String> Map = Maps.newHashMap();
+            Map.put("Reason", FakeData.HttpStr.PARAMETERERROR.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+
+    @RequestMapping(value = "/label/v1.0", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> getUserLabel(@RequestParam(value = "phonenum") String phonenum,
+                                                            @RequestParam(value = "date") String date,
+                                                            @RequestParam(value = "token") String token) {
+        try {
+            HashMap<String, Object> Map = Maps.newHashMap();
+            if (null != phonenum && token.equals("test") && null != date) {
+                String[] split = phonenum.split(",");
+                for (String str : split) {
+                    if (!FakeData.getMa5Phone(str).isEmpty()) {
+                        Map.put(FakeData.getMa5Phone(str), queryService.getlabelUserinfo(str));
+                    } else {
+                        Map.put(str, FakeData.HttpStr.PHONEERROR.toString());
+                    }
+                }
+                return ResponseEntity.ok(Map);
+            }
+            Map.put("Reason", FakeData.HttpStr.PARAMETERERROR.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+
+    @RequestMapping(value = "/estatemicro/v1.0")
+    public ResponseEntity<Map<String, Object>> getEstateUserLabel(@RequestParam(value = "estatecode") String estatecode,
+                                                                  @RequestParam(value = "date") String date,
+                                                                  @RequestParam(value = "token") String token) {
+        try {
+            HashMap<String, Object> Map = Maps.newHashMap();
+            if (null != estatecode && token.equals("test") && null != date) {
+                if (FakeData.isNum(estatecode)) {
+                    Map<String, Object> labelmap = queryService.getEsatUserLabelMaps(Integer.parseInt(estatecode));
+                    return ResponseEntity.ok(labelmap);
+                }
+            }
+            Map.put("Reason", FakeData.HttpStr.PARAMETERERROR.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @RequestMapping(value = "/estate/v1.0")
+    public ResponseEntity<Map<String, Object>> getEstate(@RequestParam(value = "estatecode") String estatecode,
+                                                         @RequestParam(value = "date") String date,
+                                                         @RequestParam(value = "token") String token) {
+        try {
+            HashMap<String, Object> Map = Maps.newHashMap();
+            if (null != estatecode && token.equals("test") && null != date) {
+                if (FakeData.isNum(estatecode)) {
+                    java.util.Map<String, Object> stringObjectMap = queryService.houseMacrography(Integer.parseInt(estatecode));
+                    return ResponseEntity.ok(stringObjectMap);
+                }
+            }
+            Map.put("Reason", FakeData.HttpStr.PARAMETERERROR.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+
 }
