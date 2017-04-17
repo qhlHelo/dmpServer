@@ -2,6 +2,8 @@ package com.chinagreentown.dmp.api;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -24,6 +26,7 @@ import java.util.concurrent.TimeUnit;
  * @author Costin Leau
  * @author Shaun Elliott
  */
+
 /**
  * JThink@JThink
  *
@@ -131,12 +134,18 @@ public class HbaseTemplate implements HbaseOperations {
                     byte[] family = Bytes.toBytes(familyName);
                     if (StringUtils.isNotBlank(qualifier)) {
                         get.addColumn(family, Bytes.toBytes(qualifier));
-                    }
-                    else {
+                    } else {
                         get.addFamily(family);
                     }
                 }
                 Result result = table.get(get);
+                for (Cell cell : result.rawCells()) {
+                    System.out.println("********************" + Bytes.toString(CellUtil.cloneFamily(cell)) + ":" +
+                            Bytes.toString(CellUtil.cloneQualifier(cell)) + ":" +
+                            Bytes.toString(CellUtil.cloneValue(cell)) + ":" +
+                            Bytes.toString(CellUtil.cloneRow(cell)));
+                }
+                System.out.println();
                 return mapper.mapRow(result, 0);
             }
         });

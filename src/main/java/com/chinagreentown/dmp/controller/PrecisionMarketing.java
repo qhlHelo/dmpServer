@@ -157,7 +157,7 @@ public class PrecisionMarketing {
     }
 
 
-    @RequestMapping(value = "/label/v1.0")
+    @RequestMapping(value = "/label/v1.0", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> getUserLabel(@RequestParam(value = "phonenum") String phonenum,
                                                             @RequestParam(value = "date") String date,
                                                             @RequestParam(value = "token") String token) {
@@ -193,6 +193,26 @@ public class PrecisionMarketing {
                 if (FakeData.isNum(estatecode)) {
                     Map<String, Object> labelmap = queryService.getEsatUserLabelMaps(Integer.parseInt(estatecode));
                     return ResponseEntity.ok(labelmap);
+                }
+            }
+            Map.put("Reason", FakeData.HttpStr.PARAMETERERROR.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @RequestMapping(value = "/estate/v1.0")
+    public ResponseEntity<Map<String, Object>> getEstate(@RequestParam(value = "estatecode") String estatecode,
+                                                         @RequestParam(value = "date") String date,
+                                                         @RequestParam(value = "token") String token) {
+        try {
+            HashMap<String, Object> Map = Maps.newHashMap();
+            if (null != estatecode && token.equals("test") && null != date) {
+                if (FakeData.isNum(estatecode)) {
+                    java.util.Map<String, Object> stringObjectMap = queryService.houseMacrography(Integer.parseInt(estatecode));
+                    return ResponseEntity.ok(stringObjectMap);
                 }
             }
             Map.put("Reason", FakeData.HttpStr.PARAMETERERROR.toString());

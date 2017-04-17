@@ -1,11 +1,13 @@
 package com.chinagreentown.dmp.service;
 
+import com.chinagreentown.dmp.Mapper.PeopleRowMapper;
 import com.chinagreentown.dmp.api.HbaseTemplate;
 import com.chinagreentown.dmp.pojo.PeopleDto;
 import com.chinagreentown.dmp.pojo.UserInfo;
 import com.chinagreentown.dmp.pojo.datacenter.NetBehavior;
 import com.chinagreentown.dmp.pojo.datacenter.UserBaseInfo;
 import com.chinagreentown.dmp.util.FakeData;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Mutation;
@@ -143,17 +145,17 @@ public class QueryService {
     public Map<String, Object> getEsatUserLabelMaps(int code) {
         HashMap<String, Object> returnmap = Maps.newHashMap();
         HashMap<String, Object> map1 = Maps.newHashMap();
-        HashMap<String, Object> map2 = Maps.newHashMap();
+        ArrayList<Object> lists = Lists.newArrayList();
         for (int i = 0; i < (code % 3) + 2; i++) {
             String phonenum = FakeData.getPhoneList().get((code + i) % 5);
             String ma5Phone = FakeData.getMa5Phone(phonenum);
             if (i % 2 == 0) {
                 map1.put(ma5Phone, this.getlabelUserinfo(phonenum));
             }
-            map2.put(ma5Phone, this.getlabelUserinfo(phonenum));
+            lists.add(this.getlabelUserinfo(phonenum));
         }
-        returnmap.put("owner",map1);
-        returnmap.put("intentUser",map1);
+        returnmap.put("owner", map1);
+        returnmap.put("intentUser", lists);
         return returnmap;
     }
 
@@ -195,4 +197,44 @@ public class QueryService {
         return returnMap;
     }
 
+    public Map<String, Object> houseMacrography(int code) {
+        HashMap<String, Object> map = Maps.newLinkedHashMap();
+        map.put("developer", FakeData.getE(FakeData.devList, code));
+        map.put("plate", FakeData.getE(FakeData.placeList, code));
+        map.put("GT02001001013", FakeData.getE(FakeData.orientationList, code));
+        map.put("location", FakeData.getE(FakeData.locationList, code));
+        map.put("GT02001001004001", FakeData.getE(FakeData.unitList, code));
+        map.put("GT02001001004002", FakeData.getE(FakeData.totalPrice, code));
+        map.put("foucs", FakeData.getE(FakeData.focusList, code));
+        map.put("GT02001001005", FakeData.getE(FakeData.vastList, code));
+        map.put("GT02001001014", FakeData.getE(FakeData.redecoratList, code));
+        map.put("GT02001001007", FakeData.getE(FakeData.floorList, code));
+        map.put("GT02001001012", FakeData.getE(FakeData.HouseholdList, code));
+        map.put("GT02001001001", FakeData.getE(FakeData.locationList, code));
+        map.put("school", FakeData.getE(FakeData.schoolList, code));
+        map.put("subway", FakeData.getE(FakeData.subwayList, code));
+        ArrayList<String> list = Lists.newArrayList();
+        for (int i = 0; i < code % FakeData.specialList.size(); i++) {
+            list.add(FakeData.specialList.get((code + i) % FakeData.specialList.size()));
+        }
+        map.put("GT02001001016", list);
+        if (code % 5 == 1) {
+            map.put(FakeData.house.house1.getKey(), FakeData.house.house1.getValeu());
+        } else if (code % 5 == 2) {
+            map.put(FakeData.house.house2.getKey(), FakeData.house.house2.getValeu());
+        } else if (code % 5 == 3) {
+            map.put(FakeData.house.house3.getKey(), FakeData.house.house3.getValeu());
+        } else if (code % 5 == 4) {
+            map.put(FakeData.house.house4.getKey(), FakeData.house.house4.getValeu());
+        } else {
+            map.put(FakeData.house.house5.getKey(), FakeData.house.house5.getValeu());
+        }
+        return map;
+    }
+
+
+    public static void main(String[] args) {
+        QueryService queryService = new QueryService();
+        System.out.println(queryService.houseMacrography(2));
+    }
 }

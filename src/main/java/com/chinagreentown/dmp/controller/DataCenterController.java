@@ -26,7 +26,7 @@ public class DataCenterController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PrecisionMarketing.class);
 
-    @RequestMapping(method = RequestMethod.GET, value = "portrait/v1.0")
+    @RequestMapping(method = RequestMethod.POST, value = "portrait/v1.0")
     /**
      * @description 画像获取
      * @version 1.0 版本号
@@ -44,7 +44,7 @@ public class DataCenterController {
                     if (!ma5Phone.isEmpty()) {
                         list.put(ma5Phone, query.getUserBaseInfo(str));
                     } else {
-                        list.put(str, "phone error");
+                        list.put(str,"");
                     }
                 }
                 return ResponseEntity.ok(list);

@@ -317,7 +317,7 @@ public class SalesCenterController {
      * @Version 1.0
      * @date 时间格式20170410
      */
-    @RequestMapping(value = "/label/v1.0", method = RequestMethod.GET)
+    @RequestMapping(value = "/label/v1.0", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> getSalesLabelV1(@RequestParam(value = "phonenum") String phonenum,
                                                                @RequestParam(value = "token") String token,
                                                                @RequestParam(value = "date") String date) {

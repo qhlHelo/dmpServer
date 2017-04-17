@@ -2,6 +2,7 @@ package com.chinagreentown.dmp.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import sun.rmi.log.LogInputStream;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -14,7 +15,7 @@ public class FakeData {
 
 
     public enum HttpStr {
-        PARAMETERERROR("parameter error"), PHONEERROR("phone error");
+        PARAMETERERROR("parameter error"), PHONEERROR("");
 
         private String value;
 
@@ -90,6 +91,61 @@ public class FakeData {
     private final static ArrayList<String> name = Lists.newArrayList("laowang", "laogao", "xiaoming", "xiaoxiao", "shisandian");
 
     private final static ArrayList<String> pv = Lists.newArrayList("19", "13", "123", "45", "78", "244", "17", "231", "23", "2379", "23121", "21321", "213213", "213213", "1", "0");
+
+    public final static ArrayList<String> devList = Lists.newArrayList("绿城", "万达", "万科", "保利", "中海", "华润置地");
+
+    public final static ArrayList<String> placeList = Lists.newArrayList("滨江", "下沙", "三墩", "钱江新城", "临平");
+
+    public final static ArrayList<String> orientationList = Lists.newArrayList("朝南", " 朝北", "朝东", " 朝西");
+
+    public final static ArrayList<String> focusList = Lists.newArrayList("十万", "二十万", " 三十万", "四十万", "五十万");
+
+    public final static ArrayList<String> locationList = Lists.newArrayList("滨江", "下沙", "三墩", "钱江新城", "临平");
+
+    public final static ArrayList<String> unitList = Lists.newArrayList("10000", "20000", "30000", "40000", "50000");
+
+    public final static ArrayList<String> vastList = Lists.newArrayList("一百平米");
+
+    public final static ArrayList<String> totalPrice = Lists.newArrayList("一百万", "两百万", "三百万", "四百万", "五百万");
+
+    public final static ArrayList<String> schoolList = Lists.newArrayList("学军", "浙大", "杭电", "理工", "工业大学");
+
+    public final static ArrayList<String> HouseholdList = Lists.newArrayList("一居", "两居", "三居", "四居");
+
+    public final static ArrayList<String> redecoratList = Lists.newArrayList("简装", "中装", "精装");
+
+    public final static ArrayList<String> subwayList = Lists.newArrayList("一线", "二线", "三线", "四线", "五线");
+
+    public final static ArrayList<String> floorList = Lists.newArrayList("底层", "中层", "中高层");
+
+    public final static ArrayList<String> specialList = Lists.newArrayList("近地铁", "学区", "高端住宅", "交通便利", "现房");
+
+
+    public enum house {
+        house1("GU0040030101130001", "越秀星汇城住宅"), house2("GU0040030101130002", "美丽湾住宅"), house3("GU0040030101130003", "德信早安住宅"), house4("GU0040030101130004", "中港罗兰小镇住宅"), house5("GU0040030101130005", "雅居乐国际花园住宅");
+
+        private String key;
+
+        private String value;
+
+        private house(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public String getKey() {
+            return this.key;
+        }
+
+        public String getValeu() {
+            return this.value;
+        }
+    }
+
+
+    public static <E> E getE(List<E> list, int code) {
+        return list.get(code%list.size());
+    }
 
 
     public static Map<String, String> getMap() {
@@ -280,11 +336,6 @@ public class FakeData {
         return map;
     }
 
-    public static void main(String[] args) {
-        System.out.println(getComMap("18968102733"));
-
-    }
-
 
     public static String getcon(String phonenum) {
         Long yu = Long.parseLong(phonenum) % conList.size();
@@ -320,7 +371,7 @@ public class FakeData {
         Long phone = Long.valueOf(phonenum);
         for (int i = 0; i < (phone % strings.size()); i++) {
             LinkedHashMap<String, String> map = Maps.newLinkedHashMap();
-            Long i1 = phone% (strings.size());
+            Long i1 = phone % (strings.size());
             String s = strings.get((i1.intValue() + i) % strings.size());
             map.put(s, netAssert.get(s));
             map.put("pv", getPv(i));
@@ -338,7 +389,7 @@ public class FakeData {
         Long phone = Long.valueOf(phonenum);
         for (int i = 0; i < (phone % strings.size()); i++) {
             LinkedHashMap<String, String> map = Maps.newLinkedHashMap();
-            Long i1 = phone% (strings.size() );
+            Long i1 = phone % (strings.size());
             String s = strings.get((i1.intValue() + i) % strings.size());
             map.put(s, netSport.get(s));
             map.put("pv", getPv(i));

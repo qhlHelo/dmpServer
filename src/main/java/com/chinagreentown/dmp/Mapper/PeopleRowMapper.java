@@ -1,4 +1,4 @@
-package com.chinagreentown.dmp.service;
+package com.chinagreentown.dmp.Mapper;
 
 import com.chinagreentown.dmp.api.RowMapper;
 import com.chinagreentown.dmp.pojo.PeopleDto;
