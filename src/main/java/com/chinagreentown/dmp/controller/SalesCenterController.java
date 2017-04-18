@@ -330,7 +330,7 @@ public class SalesCenterController {
                     if (!ma5Phone.isEmpty()) {
                         list.put(ma5Phone, query.getuUerInfo(str));
                     } else {
-                        list.put(str, "phone error");
+                        list.put(str, FakeData.HttpStr.PHONEERROR.toString());
                     }
                 }
                 return ResponseEntity.ok(list);

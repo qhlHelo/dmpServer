@@ -1,5 +1,6 @@
 package com.chinagreentown.dmp.controller;
 
+import com.chinagreentown.dmp.pojo.UsrBasAttrPojo;
 import com.chinagreentown.dmp.service.QueryService;
 import com.chinagreentown.dmp.util.FakeData;
 import com.google.common.collect.Maps;
@@ -44,7 +45,7 @@ public class DataCenterController {
                     if (!ma5Phone.isEmpty()) {
                         list.put(ma5Phone, query.getUserBaseInfo(str));
                     } else {
-                        list.put(str, FakeData.HttpStr.PHONEERROR);
+                        list.put(str, FakeData.HttpStr.PHONEERROR.toString());
                     }
                 }
                 return ResponseEntity.ok(list);

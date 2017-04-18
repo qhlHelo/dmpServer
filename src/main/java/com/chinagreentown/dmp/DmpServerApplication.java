@@ -2,16 +2,24 @@ package com.chinagreentown.dmp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class DmpServerApplication {
+public class DmpServerApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         // 设置windows系统下hadoop环境
-        System.setProperty("hadoop.home.dir", "E:\\U盘拷贝\\以数\\hadoop\\软件\\hadoop-2.7.3");
+        System.setProperty("hadoop.home.dir", "D:\\hadoop-2.7.3");
         SpringApplication.run(DmpServerApplication.class, args);
     }
+
+    @Override
+    protected SpringApplicationBuilder configure(
+            SpringApplicationBuilder application) {
+        return application.sources(DmpServerApplication.class);
+    }
+
 
     //	@Component
 //	public static class CustomServletContainer implements EmbeddedServletContainerCustomizer {
