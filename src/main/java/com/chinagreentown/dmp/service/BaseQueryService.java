@@ -1,6 +1,7 @@
 package com.chinagreentown.dmp.service;
 
 import com.chinagreentown.dmp.pojo.ComInfoPojo.com;
+import com.chinagreentown.dmp.pojo.UsrBasAttrPojo.attr;
 import com.chinagreentown.dmp.pojo.UsrPoiInfoPojo.poi;
 import org.apache.hadoop.hbase.filter.FilterList;
 
@@ -15,6 +16,7 @@ public interface BaseQueryService {
 
     /**
      * 返回   通信信息
+     *
      * @param familly 列族
      * @param list    过滤器
      * @return 返回对象
@@ -22,12 +24,23 @@ public interface BaseQueryService {
     List<com> getUsrCom(String familly, FilterList list);
 
     /**
-     *  返回用户位置信息
+     * 返回用户位置信息
+     *
      * @param familly
      * @param list
      * @return
      */
-    List<poi>   getUsrPoiInfo(String familly, FilterList list);
+    List<poi> getUsrPoiInfo(String familly, FilterList list);
+
+    /**
+     * 获取用户基本信息
+     *
+     * @param familly
+     * @param list
+     * @return
+     */
+    List<attr> getUserAttr(String familly, FilterList list);
+
 
 
 }

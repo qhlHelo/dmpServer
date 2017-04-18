@@ -38,11 +38,29 @@ public class SystemCache {
         return instance;
     }
 
-    //通信信息map
+    //通信信息map  映射
     private static Map<String, Map<String, String>> commap = null;
-    //消费表
+    //消费表 映射
     private static Map<String, Map<String, String>> conmap = null;
+    //用户基本信息映射
+    private static Map<String, Map<String, String>> UsrBasMap = null;
 
+    private Map<String, Map<String, String>> setUsrBasMap() throws JSONException {
+        Map<String, Map<String, String>> map = Maps.newHashMap();
+        String s = FileUtil.ReadFile("C:\\Users\\yun\\Desktop\\json\\CON1.json");
+        BeanUtil.json2DoubleMap(new JSONObject(s), map);
+        UsrBasMap = map;
+        return UsrBasMap;
+    }
+
+    public Map<String, String> getUsrBasMap(String key) throws JSONException {
+        if (null == UsrBasMap) {
+            UsrBasMap = setUsrBasMap();
+        }
+        return UsrBasMap.get(key);
+    }
+
+    //放置缓存
     private Map<String, Map<String, String>> setConMap() throws JSONException {
         Map<String, Map<String, String>> map = Maps.newHashMap();
         String s = FileUtil.ReadFile("C:\\Users\\yun\\Desktop\\json\\Consume.json");
@@ -52,6 +70,7 @@ public class SystemCache {
         return conmap;
     }
 
+    //通过 编码 获取  这个编码的所有父节点
     public Map<String, String> getConMap(String key) throws JSONException {
         if (null == conmap) {
             conmap = setConMap();
