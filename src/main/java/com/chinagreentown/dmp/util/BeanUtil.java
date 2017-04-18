@@ -17,6 +17,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by yun on 2017/4/17.
@@ -30,7 +31,7 @@ public class BeanUtil {
         Object obj = beanClass.newInstance();
         Field[] fields = obj.getClass().getDeclaredFields();
         String[] split = beanClass.getName().split("\\.");
-        byte[] name=split[split.length - 1].getBytes();
+        byte[] name = split[split.length - 1].getBytes();
         for (Field field : fields) {
             int mod = field.getModifiers();
             if (Modifier.isStatic(mod) || Modifier.isFinal(mod)) {
@@ -69,6 +70,18 @@ public class BeanUtil {
             map.put(key, inmap);
         }
         return map;
+    }
+
+    //value 为json 的转换为一个map,去最低和最高的
+    public static Map<String, Object> jsonMap2map(Map<String, String> map) throws JSONException {
+        Map<String, Object> ObjectMap = Maps.newHashMap();
+        Set<String> strings = map.keySet();
+        int size = strings.size();
+        String max = map.get("0" + size);
+        BeanUtil.json2Map(new JSONObject(max), ObjectMap);
+        String min = map.get("0" + 1);
+        BeanUtil.json2Map(new JSONObject(min), ObjectMap);
+        return ObjectMap;
     }
 
 

@@ -47,7 +47,7 @@ public class SystemCache {
 
     private Map<String, Map<String, String>> setUsrBasMap() throws JSONException {
         Map<String, Map<String, String>> map = Maps.newHashMap();
-        String s = FileUtil.ReadFile("C:\\Users\\yun\\Desktop\\json\\COM.json");
+        String s = FileUtil.ReadFile("C:\\Users\\yun\\Desktop\\json\\CON1.json");
         BeanUtil.json2DoubleMap(new JSONObject(s), map);
         UsrBasMap = map;
         return UsrBasMap;
@@ -55,7 +55,7 @@ public class SystemCache {
 
     public Map<String, String> getUsrBasMap(String key) throws JSONException {
         if (null == UsrBasMap) {
-            UsrBasMap = setConMap();
+            UsrBasMap = setUsrBasMap();
         }
         return UsrBasMap.get(key);
     }

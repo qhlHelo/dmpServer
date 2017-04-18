@@ -4,6 +4,7 @@ import com.chinagreentown.dmp.Cache.SystemCache;
 import com.chinagreentown.dmp.pojo.ComInfoPojo.com;
 import com.chinagreentown.dmp.pojo.UserInfo;
 import com.chinagreentown.dmp.pojo.UsrBasAttrPojo.attr;
+import com.chinagreentown.dmp.pojo.UsrPoiInfoPojo.poi;
 import com.chinagreentown.dmp.service.BaseQueryService;
 import com.chinagreentown.dmp.service.PrecisionMarketingService;
 import com.chinagreentown.dmp.util.BeanUtil;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,8 +36,13 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         RowFilter rf = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(date));
         filterList.addFilter(rf);
-        com com = basequery.getUsrCom("com", filterList).get(0);
-        return getConMapDTO(com);
+        FilterList filterList1 = new FilterList(FilterList.Operator.MUST_PASS_ONE);
+        SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter("attr".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, "83dbaf4d37d7e9befa22fa7ec4f76b8e".getBytes());
+        SingleColumnValueFilter singleColumnValueFilter1 = new SingleColumnValueFilter("attr".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, "410032cd76e051b0faf1d1342076335a".getBytes());
+        filterList1.addFilter(singleColumnValueFilter);
+        filterList1.addFilter(singleColumnValueFilter1);
+        filterList.addFilter(filterList1);
+        return basequery.getUserAttr("attr", filterList1);
     }
 
     @Override
@@ -88,17 +95,34 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
     }
 
     @Override
-    public Map<String, Object> getUserInfo(attr attrEnity) throws JSONException {
+    public Map<String, Object> getUserAttrDTO(attr attrEnity) throws JSONException {
+        HashMap<String, Object> returnMap = Maps.newHashMap();
         String age = attrEnity.getAge();
         String gender = attrEnity.getGender();
         String district = attrEnity.getDistrict();
-        String encryption_tel = attrEnity.getEncryption_tel();
-        Map<String, String> usrBasMap = SystemCache.getInstance().getUsrBasMap(age);
+        Map<String, String> ageMap = SystemCache.getInstance().getUsrBasMap(age);
+        returnMap.put(age, BeanUtil.jsonMap2map(ageMap));
+        Map<String, String> genderMap = SystemCache.getInstance().getUsrBasMap(gender);
+        returnMap.put(gender, BeanUtil.jsonMap2map(genderMap));
+        Map<String, String> districtMap = SystemCache.getInstance().getUsrBasMap(district);
+        returnMap.put(district, BeanUtil.jsonMap2map(districtMap));
+        return returnMap;
+    }
 
+    @Override
+    public Map<String, Object> getUsrPoiInfoLive(poi poiEnity) {
+        String p_live = poiEnity.getP_live();
+        HashMap<String, Object> map = Maps.newHashMap();
+        map.put("p_live", p_live);
+        return map;
+    }
 
-        return null;
-
-
+    @Override
+    public Map<String, Object> getUsrPoiInfoWork(poi poiEnity) {
+        String p_live = poiEnity.getP_work();
+        HashMap<String, Object> map = Maps.newHashMap();
+        map.put("p_work", p_live);
+        return map;
     }
 
 
