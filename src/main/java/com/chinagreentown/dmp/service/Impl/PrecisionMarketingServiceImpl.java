@@ -2,22 +2,19 @@ package com.chinagreentown.dmp.service.Impl;
 
 import com.chinagreentown.dmp.Cache.SystemCache;
 import com.chinagreentown.dmp.pojo.ComInfoPojo.com;
-import com.chinagreentown.dmp.pojo.UsrPoiInfoPojo.poi;
+import com.chinagreentown.dmp.pojo.UserInfo;
+import com.chinagreentown.dmp.pojo.UsrBasAttrPojo.attr;
 import com.chinagreentown.dmp.service.BaseQueryService;
 import com.chinagreentown.dmp.service.PrecisionMarketingService;
 import com.chinagreentown.dmp.util.BeanUtil;
 import com.google.common.collect.Maps;
-import org.apache.commons.collections.MapUtils;
 import org.apache.hadoop.hbase.filter.*;
-import org.codehaus.jackson.map.Serializers;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -88,6 +85,20 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
             }
         }
         return returnMap;
+    }
+
+    @Override
+    public Map<String, Object> getUserInfo(attr attrEnity) throws JSONException {
+        String age = attrEnity.getAge();
+        String gender = attrEnity.getGender();
+        String district = attrEnity.getDistrict();
+        String encryption_tel = attrEnity.getEncryption_tel();
+        Map<String, String> usrBasMap = SystemCache.getInstance().getUsrBasMap(age);
+
+
+        return null;
+
+
     }
 
 
