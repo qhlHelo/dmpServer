@@ -42,25 +42,28 @@ public interface PrecisionMarketingService {
     Map<String, Object> getConMapDTO(com comEnity) throws JSONException;
 
     /**
-     *   获取用户基本信息
+     * 获取用户基本信息
+     *
      * @param attrEnity
      * @return
      */
     Map<String, Object> getUserAttrDTO(attr attrEnity) throws JSONException;
 
     /**
-     *   生活位置信息 转
+     * 生活位置信息 转
+     *
      * @param poiEnity
      * @return
      */
-    Map<String,Object>   getUsrPoiInfoLive(poi poiEnity);
+    Map<String, Object> getUsrPoiInfoLive(poi poiEnity);
 
     /**
      * 工作坐标  转 dto
+     *
      * @param poiEnity
      * @return
      */
-    Map<String,Object>   getUsrPoiInfoWork(poi poiEnity);
+    Map<String, Object> getUsrPoiInfoWork(poi poiEnity);
 
 
 }
