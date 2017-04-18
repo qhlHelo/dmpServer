@@ -1,11 +1,17 @@
 package com.chinagreentown.dmp.service.Impl;
 
 import com.chinagreentown.dmp.Mapper.UsrCNetBhvrMapper;
+import com.chinagreentown.dmp.Mapper.UsrComInfoMapper;
+import com.chinagreentown.dmp.Mapper.UsrPoiInfoMapper;
 import com.chinagreentown.dmp.api.HbaseTemplate;
+import com.chinagreentown.dmp.pojo.ComInfoPojo.com;
 import com.chinagreentown.dmp.pojo.UsrCNetBhvrPojo.bhvr;
+import com.chinagreentown.dmp.pojo.UsrPoiInfoPojo.poi;
 import com.chinagreentown.dmp.service.BaseQueryService;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FilterList;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,27 +27,28 @@ public class BaseQueryServiceImpl implements BaseQueryService {
 
     @Autowired
     private HbaseTemplate hbaseservice;
+    //通信信息表明
+    private final static String COMINFO = "com_info";
+    //usr_poi_info 用户位置信息基础表
+    private final static String USRPOI = "com_info";
 
     @Override
-    public List<bhvr> getBhvr(String family) {
-        Scan scan = new Scan();
-        List<bhvr> bhvrs = hbaseservice.find(usr_c_net_bhvr, family, new UsrCNetBhvrMapper());
-        return bhvrs;
-    }
-
-    @Override
-    public List<bhvr> getBhvr(String family, String qualifier) {
-        Scan scan = new Scan();
-        List<bhvr> bhvrs = hbaseservice.find(usr_c_net_bhvr, family, qualifier, new UsrCNetBhvrMapper());
-        return bhvrs;
-    }
-
-    @Override
-    public List<bhvr> getBhvr(String family, FilterList list) {
-        //过滤器
+    public List<com> getUsrCom(String family, FilterList list) {
         Scan scan = new Scan();
         scan.setFilter(list);
-        return hbaseservice.find(usr_c_net_bhvr, family, new UsrCNetBhvrMapper());
-
+        scan.addFamily(Bytes.toBytes(family));
+        List<com> com_info = hbaseservice.find(COMINFO, scan, new UsrComInfoMapper());
+        return com_info;
     }
+
+    @Override
+    public List<poi> getUsrPoiInfo(String family, FilterList list) {
+        Scan scan = new Scan();
+        scan.setFilter(list);
+        scan.addFamily(Bytes.toBytes(family));
+        List<poi> pois = hbaseservice.find(USRPOI, scan, new UsrPoiInfoMapper());
+        return pois;
+    }
+
+
 }
