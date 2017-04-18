@@ -28,6 +28,8 @@ public class FakeData {
         }
     }
 
+
+
     public enum LabelKey {
         BASE("GT01"), BASENAME("GT01001B"), BASEPHONE("GT01006001"), BASELIVEAREA("GT03002"), BASEWORKAREA("GT03003"),
         COM("GT09COM"), NETBEHAVE("netBehavior");

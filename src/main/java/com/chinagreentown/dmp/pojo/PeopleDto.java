@@ -3,6 +3,11 @@ package com.chinagreentown.dmp.pojo;
 /**
  * Created by admin on 2017/4/8.
  */
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class PeopleDto {
     private String phone;
     private String age;
