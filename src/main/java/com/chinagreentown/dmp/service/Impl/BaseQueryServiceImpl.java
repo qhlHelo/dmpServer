@@ -38,6 +38,7 @@ public class BaseQueryServiceImpl implements BaseQueryService {
 
     @Override
     public List<bhvr> getBhvr(String family, FilterList list) {
+        //过滤器
         Scan scan = new Scan();
         scan.setFilter(list);
         return hbaseservice.find(usr_c_net_bhvr, family, new UsrCNetBhvrMapper());
