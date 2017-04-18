@@ -36,13 +36,10 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         RowFilter rf = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(date));
         filterList.addFilter(rf);
-        FilterList filterList1 = new FilterList(FilterList.Operator.MUST_PASS_ONE);
-        SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter("attr".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, "83dbaf4d37d7e9befa22fa7ec4f76b8e".getBytes());
-        SingleColumnValueFilter singleColumnValueFilter1 = new SingleColumnValueFilter("attr".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, "410032cd76e051b0faf1d1342076335a".getBytes());
-        filterList1.addFilter(singleColumnValueFilter);
-        filterList1.addFilter(singleColumnValueFilter1);
-        filterList.addFilter(filterList1);
-        return basequery.getUserAttr("attr", filterList1);
+        ByteArrayComparable comparator = new RegexStringComparator("ece459f750dd6c86003dddc6bd52cf83|c3b374c89508281f94883e6909545faf");
+        SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter("attr".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, comparator);
+        filterList.addFilter(singleColumnValueFilter);
+        return basequery.getUserAttr("attr", filterList);
     }
 
     @Override
