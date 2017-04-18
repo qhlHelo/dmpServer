@@ -43,7 +43,7 @@ public class SystemCache {
     //消费表
     private static Map<String, Map<String, String>> conmap = null;
 
-    private Map<String, Map<String, String>> setConmap() throws JSONException {
+    private Map<String, Map<String, String>> setConMap() throws JSONException {
         Map<String, Map<String, String>> map = Maps.newHashMap();
         String s = FileUtil.ReadFile("C:\\Users\\yun\\Desktop\\json\\Consume.json");
         JSONObject jsonMap = new JSONObject(s);
@@ -52,6 +52,12 @@ public class SystemCache {
         return conmap;
     }
 
+    public Map<String, String> getConMap(String key) throws JSONException {
+        if (null == conmap) {
+            conmap = setConMap();
+        }
+        return conmap.get(key);
+    }
 
     //通过编码获取他的所有信息 ，从一级 到最高级
     public Map<String, String> getComMap(String key) throws JSONException {

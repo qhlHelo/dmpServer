@@ -19,7 +19,8 @@ public interface PrecisionMarketingService {
     Object getUsrLabelInfo(String date) throws NoSuchFieldException, JSONException, IllegalAccessException;
 
 
-    Map<String, Object> getComMapDTO(com com) throws NoSuchFieldException, JSONException, IllegalAccessException;
+    Map<String, Object> getComMapDTO(com comEnity) throws NoSuchFieldException, JSONException, IllegalAccessException;
 
+    Map<String, Object>  getConMapDTO(com comEnity) throws JSONException;
 
 }

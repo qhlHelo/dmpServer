@@ -29,6 +29,8 @@ public class BeanUtil {
 //        Object obj = UsrCNetBhvrPojo.class.getConstructor(UsrCNetBhvrPojo.class).newInstance(beanClass);
         Object obj = beanClass.newInstance();
         Field[] fields = obj.getClass().getDeclaredFields();
+        String[] split = beanClass.getName().split("\\.");
+        byte[] name=split[split.length - 1].getBytes();
         for (Field field : fields) {
             int mod = field.getModifiers();
             if (Modifier.isStatic(mod) || Modifier.isFinal(mod)) {
@@ -36,9 +38,8 @@ public class BeanUtil {
             }
             //据说能提升性能
             field.setAccessible(true);
-            String[] split = beanClass.getName().split("\\.");
             //最后一个类名就是他的family 列名
-            field.set(obj, Bytes.toString(result.getValue(split[split.length - 1].getBytes(), field.getName().getBytes())));
+            field.set(obj, Bytes.toString(result.getValue(name, field.getName().getBytes())));
         }
         return obj;
     }

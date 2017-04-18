@@ -38,7 +38,7 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
         RowFilter rf = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(date));
         filterList.addFilter(rf);
         com com = basequery.getUsrCom("com", filterList).get(0);
-        return getComMapDTO(com);
+        return getConMapDTO(com);
     }
 
     @Override
@@ -68,6 +68,26 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
         }
         return objectObjectHashMap;
 
+    }
+
+    @Override
+    public Map<String, Object> getConMapDTO(com comEnity) throws JSONException {
+        Map<String, Object> returnMap = Maps.newHashMap();
+        if (null != comEnity) {
+            String tel_cost = comEnity.getTel_cost();
+            if (comEnity != null) {
+                Map<String, String> map = SystemCache.getInstance().getConMap(tel_cost);
+                Set<String> strings = map.keySet();
+                int size = strings.size();
+                Map<String, Object> ObjectMap = Maps.newHashMap();
+                String max = map.get("0" + size);
+                BeanUtil.json2Map(new JSONObject(max), ObjectMap);
+                String min = map.get("0" + 1);
+                BeanUtil.json2Map(new JSONObject(min), ObjectMap);
+                returnMap.put(tel_cost, ObjectMap);
+            }
+        }
+        return returnMap;
     }
 
 
