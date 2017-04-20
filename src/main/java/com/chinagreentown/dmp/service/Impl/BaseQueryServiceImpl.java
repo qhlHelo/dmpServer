@@ -65,7 +65,10 @@ public class BaseQueryServiceImpl implements BaseQueryService {
         return attrs;
     }
 
-
+    @Override
+    public List<bhvr> getUsrBhvr(String family, FilterList list) {
+        return null;
+    }
 
 
 }

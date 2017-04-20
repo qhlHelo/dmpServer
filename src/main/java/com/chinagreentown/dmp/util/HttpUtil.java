@@ -76,7 +76,7 @@ public class HttpUtil {
         String s = sendGet(EncryptUrl, phoneNo);
         try {
             JSONObject jsonObject = new JSONObject(s);
-            if (jsonObject.isNull("result")) {
+            if (!jsonObject.isNull("result")) {
                 return jsonObject.getString("result");
             }
 

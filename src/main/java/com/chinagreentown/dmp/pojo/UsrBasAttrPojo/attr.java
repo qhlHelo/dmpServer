@@ -1,10 +1,13 @@
 package com.chinagreentown.dmp.pojo.UsrBasAttrPojo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 /**
  * Created by yun on 2017/4/17.
  *
  * @description 对应 usr_bas_attr（用户基础属性表）
  */
+
 
 public class attr {
     //名字

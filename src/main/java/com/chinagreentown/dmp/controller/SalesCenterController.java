@@ -318,31 +318,33 @@ public class SalesCenterController {
      * @date 时间格式20170410
      */
     @RequestMapping(value = "/label/v1.0", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> getSalesLabelV1(@RequestParam(value = "phonenum") String phonenum,
-                                                               @RequestParam(value = "token") String token,
-                                                               @RequestParam(value = "date") String date) {
+    public ResponseEntity<Object> getSalesLabelV1(@RequestParam(value = "phonenum") String phonenum,
+                                                  @RequestParam(value = "token") String token,
+                                                  @RequestParam(value = "date") String date) {
         try {
-            Map<String, Object> list = Maps.newHashMap();
+            List<Object> list = Lists.newArrayList();
+            HashMap<Object, Object> objectObjectHashMap = Maps.newHashMap();
             if (null != phonenum && token.equals("test") && null != date) {
                 String[] phone = phonenum.split(",");
                 for (String str : phone) {
                     String ma5Phone = FakeData.getMa5Phone(str);
                     if (!ma5Phone.isEmpty()) {
-                        list.put(ma5Phone, query.getuUerInfo(str));
+                        list.add(query.getuUerInfo(str));
+//                        list.put(ma5Phone, query.getuUerInfo(str));
                     } else {
-                        list.put(str, FakeData.HttpStr.PHONEERROR.toString());
+//                        list.put(str, FakeData.HttpStr.PHONEERROR.toString());
                     }
                 }
                 return ResponseEntity.ok(list);
             }
             //参数错误
-            list.put("Reason", "parameter error");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(list);
+            objectObjectHashMap.put("Reason", "parameter error");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectObjectHashMap);
         } catch (Exception e) {
             e.printStackTrace();
         }
         // 查询出错，响应500
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-
     }
+
 }
