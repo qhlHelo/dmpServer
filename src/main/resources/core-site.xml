@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+
+	<!-- 指定hdfs的nameservice为ns1 -->
+	<!-- 这里的值指的是默认的HDFS路径。
+	当有多个HDFS集群同时工作时，集群名称在这里指定！该值来自于hdfs-site.xml中的配置 -->
+	<property>
+		<name>fs.defaultFS</name>
+		<value>hdfs://ns1</value>
+	</property>
+	
+	<!-- 指定hadoop临时目录 -->
+	<!-- 这里的路径默认是NameNode、DataNode、JournalNode等存放数据的公共目录。
+	用户也可以自己单独指定这三类节点的目录-->
+	<property>
+		<name>hadoop.tmp.dir</name>
+		<value>/opt/modules/hadoop-2.7.3/tmp</value>
+	</property>
+	
+	<!-- 开启故障自动转移 -->
+	<!-- 这里是ZooKeeper集群的地址和端口。注意，数量一定是奇数，且不少于三个节点 -->
+	<property>
+		<name>ha.zookeeper.quorum</name>
+		<value>dev163:2181,dev164:2181,dev165:2181</value>
+	</property>
+	
+	
+	
+	<property>
+		<name>hadoop.proxyuser.admin.hosts</name>
+		<value>*</value>
+	</property>
+	<property>
+		<name>hadoop.proxyuser.admin.groups</name>
+		<value>*</value>
+	</property>
+	
+	
+</configuration>

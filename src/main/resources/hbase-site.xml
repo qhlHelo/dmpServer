@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+/**
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<configuration>
+
+	<!-- 特别注意的是hbase.rootdir里面的HDFS地址是要跟Hadoop 
+	的core-site.xml里面的fs.defaultFS 的HDFS的IP地址或者域名、端口必须一致 -->
+	<property>
+		<name>hbase.rootdir</name>
+		<value>hdfs://ns1/hbase</value>
+	</property>
+	
+	<!-- 是否分布式，单击和伪分布式需要设置为false -->
+	<property>
+		<name>hbase.cluster.distributed</name>
+		<value>true</value>
+	</property>
+
+        <property>
+                 <name>hbase.master.port</name>
+                 <value>60000</value>
+        </property>	
+	<!-- zk集群机器，多个英文逗号隔开，注意：必须是基数 -->
+	<property>
+		<name>hbase.zookeeper.quorum</name>
+		<value>dev163,dev164,dev165</value>
+	</property>
+
+</configuration>
