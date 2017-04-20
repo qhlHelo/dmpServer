@@ -1,5 +1,6 @@
 package com.chinagreentown.dmp.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.chinagreentown.dmp.pojo.ComInfoPojo.com;
@@ -19,51 +20,53 @@ public interface PrecisionMarketingService {
      * @param date
      * @return
      */
-    Object getUsrLabelInfo(String date) throws NoSuchFieldException, JSONException, IllegalAccessException;
+    Object getUsrLabelInfo(String date, String phoneNum) throws NoSuchFieldException, JSONException, IllegalAccessException;
 
     /**
      * 根据通信对象获取 通信信息
      *
-     * @param comEnity
-     * @return
+     * @param comenitys
+     * @return key 为用户加密手机号  hbase 中取出的 通信信息对象
      * @throws NoSuchFieldException
      * @throws JSONException
      * @throws IllegalAccessException
      */
-    Map<String, Object> getComMapDTO(com comEnity) throws NoSuchFieldException, JSONException, IllegalAccessException;
+    Map<String, Object> getComMapDTO(List<com> comenitys) throws NoSuchFieldException, JSONException, IllegalAccessException;
 
     /**
      * 根据哦通信对象 获取消费信息
      *
-     * @param comEnity
-     * @return
+     * @param comenitys hbase 中取出的 通信信息对象
+     * @return key 为用户加密手机号
      * @throws JSONException
      */
-    Map<String, Object> getConMapDTO(com comEnity) throws JSONException;
+    Map<String, Object> getConMapDTO(List<com> comenitys) throws JSONException;
 
     /**
      * 获取用户基本信息
      *
-     * @param attrEnity
-     * @return
+     * @param attrEnitys hbase 中取出的 用户基本信息对象
+     * @return key 为用户加密手机号
      */
-    Map<String, Object> getUserAttrDTO(attr attrEnity) throws JSONException;
+    Map<String, Object> getUserAttrDTO(List<attr> attrEnitys) throws JSONException;
 
     /**
      * 生活位置信息 转
      *
-     * @param poiEnity
-     * @return
+     * @param poiEnitys hbase 中取出的 位置信息对象
+     * @return key 为用户加密手机号
      */
-    Map<String, Object> getUsrPoiInfoLive(poi poiEnity);
+    Map<String, Object> getUsrPoiInfoLive(List<poi> poiEnitys);
 
     /**
      * 工作坐标  转 dto
      *
-     * @param poiEnity
-     * @return
+     * @param poiEnitys hbase 中取出的 位置信息对象
+     * @return key 为用户加密手机号
      */
-    Map<String, Object> getUsrPoiInfoWork(poi poiEnity);
+    Map<String, Object> getUsrPoiInfoWork(List<poi> poiEnitys);
+
+//    Map<String,Object>  getUsrCnetBehvr
 
 
 }

@@ -2,6 +2,7 @@ package com.chinagreentown.dmp.service;
 
 import com.chinagreentown.dmp.pojo.ComInfoPojo.com;
 import com.chinagreentown.dmp.pojo.UsrBasAttrPojo.attr;
+import com.chinagreentown.dmp.pojo.UsrCNetBhvrPojo.bhvr;
 import com.chinagreentown.dmp.pojo.UsrPoiInfoPojo.poi;
 import org.apache.hadoop.hbase.filter.FilterList;
 
@@ -41,6 +42,13 @@ public interface BaseQueryService {
      */
     List<attr> getUserAttr(String familly, FilterList list);
 
+
+    /**
+     * @param family 获取列族
+     * @param list   返回应用偏好
+     * @return
+     */
+    List<bhvr> getUsrBhvr(String family, FilterList list);
 
 
 }

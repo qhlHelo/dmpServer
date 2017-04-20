@@ -1,7 +1,6 @@
 package com.chinagreentown.dmp.util;
 
 import com.chinagreentown.dmp.HbaseDemo;
-import com.chinagreentown.dmp.pojo.UsrCNetBhvrPojo.UsrCNetBhvrPojo;
 import com.chinagreentown.dmp.pojo.UsrCNetBhvrPojo.bhvr;
 import com.google.common.collect.Maps;
 import org.apache.hadoop.hbase.client.Get;
@@ -14,10 +13,11 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by yun on 2017/4/17.
@@ -40,7 +40,14 @@ public class BeanUtil {
             //据说能提升性能
             field.setAccessible(true);
             //最后一个类名就是他的family 列名
-            field.set(obj, Bytes.toString(result.getValue(name, field.getName().getBytes())));
+//            if(field.getName().equals("age")){
+//                byte[] value = result.getValue(name, "age".getBytes());
+//                System.out.println(Bytes.toString(value));
+//            }
+            String value = Bytes.toString(result.getValue(name, field.getName().getBytes()));
+            if (null != value && !value.equals("NULL")) {
+                field.set(obj, value);
+            }
         }
         return obj;
     }
@@ -72,8 +79,11 @@ public class BeanUtil {
         return map;
     }
 
-    //value 为json 的转换为一个map,去最低和最高的
+    //value 为json 的转换为一个map,取最低和最高的
     public static Map<String, Object> jsonMap2map(Map<String, String> map) throws JSONException {
+        if(map==null){
+            return Maps.newHashMap();
+        }
         Map<String, Object> ObjectMap = Maps.newHashMap();
         Set<String> strings = map.keySet();
         int size = strings.size();
@@ -84,13 +94,34 @@ public class BeanUtil {
         return ObjectMap;
     }
 
+    //判断手机号
+    public static boolean findPhone(java.lang.String phone) {
+        java.lang.String regExp = "^((13[0-9])|(15[^4])|(18[0,2,3,5-9])|(17[0-8])|(147))\\d{8}$";
+        Pattern p = Pattern.compile(regExp);
+        Matcher m = p.matcher(phone);
+        return m.matches();
+    }
+
+
+    public static String getGetPhoneNums(String phoneNums) {
+        String[] split = phoneNums.split(",");
+        String sb="";
+        for (String str : split) {
+            if (findPhone(str)) {
+                String s = HttpUtil.phoneEncrypt(str);
+                if (null != s && !s.isEmpty()) {
+                    sb=s+"|"+sb;
+
+                }
+
+            }
+        }
+        return sb.substring(0,sb.length()-1);
+    }
+
 
     public static void main(String[] args) throws Exception {
-        HTable table = HbaseDemo.getHTableByTableName("usr_c_net_bhvr");
-        Get get = new Get("092233705444412596430a1220170328".getBytes());
-        Result res = table.get(get);
-        bhvr o = (bhvr) mapRow(res, bhvr.class);
-        System.out.println(o.getPortal());
+        System.out.println(getGetPhoneNums("18968102733,18967543422"));
 
     }
 
