@@ -23,18 +23,9 @@ import java.util.concurrent.TimeUnit;
  * Central class for accessing the HBase API. Simplifies the use of HBase and helps to avoid common errors.
  * It executes core HBase workflow, leaving application code to invoke actions and extract results.
  *
- * @author Costin Leau
- * @author Shaun Elliott
+ * @desc copy from spring data hadoop hbase
  */
 
-/**
- * JThink@JThink
- *
- * @author JThink
- * @version 0.0.1
- * @desc copy from spring data hadoop hbase, modified by JThink, use the 1.0.0 api
- * @date 2016-11-15 15:42:46
- */
 public class HbaseTemplate implements HbaseOperations {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HbaseTemplate.class);

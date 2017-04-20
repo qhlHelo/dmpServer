@@ -12,11 +12,7 @@ import org.springframework.context.annotation.Bean;
 
 
 /**
- * JThink@JThink
- *
- * @author JThink
  * @desc hbase自动配置
- * @date 2016-11-16 11:11:27
  */
 @org.springframework.context.annotation.Configuration
 @EnableConfigurationProperties(HbaseProperties.class)
