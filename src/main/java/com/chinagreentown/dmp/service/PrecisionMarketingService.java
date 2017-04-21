@@ -6,7 +6,9 @@ import java.util.Map;
 import com.chinagreentown.dmp.pojo.ComInfoPojo.com;
 import com.chinagreentown.dmp.pojo.UserInfo;
 import com.chinagreentown.dmp.pojo.UsrBasAttrPojo.attr;
+import com.chinagreentown.dmp.pojo.UsrCNetBhvrPojo.bhvr;
 import com.chinagreentown.dmp.pojo.UsrPoiInfoPojo.poi;
+import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
 import org.json.JSONException;
 
 /**
@@ -21,6 +23,9 @@ public interface PrecisionMarketingService {
      * @return
      */
     Object getUsrLabelInfo(String date, String phoneNum) throws NoSuchFieldException, JSONException, IllegalAccessException;
+
+
+    Object  getEsateMicro(String date,String esateCode);
 
     /**
      * 根据通信对象获取 通信信息
@@ -66,7 +71,16 @@ public interface PrecisionMarketingService {
      */
     Map<String, Object> getUsrPoiInfoWork(List<poi> poiEnitys);
 
-//    Map<String,Object>  getUsrCnetBehvr
+
+    /**
+     * c 网爱好  转前台dto
+     * @param bhvrs
+     * @return
+     */
+    Map<String,Object>  getUsrCnetBehvr(List<bhvr>  bhvrs) throws IllegalAccessException, JSONException;
+
+
+
 
 
 }

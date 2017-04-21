@@ -3,12 +3,9 @@ package com.chinagreentown.dmp.Cache;
 import com.chinagreentown.dmp.util.BeanUtil;
 import com.chinagreentown.dmp.util.FileUtil;
 import com.google.common.collect.Maps;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -44,6 +41,24 @@ public class SystemCache {
     private static Map<String, Map<String, String>> conmap = null;
     //用户基本信息映射
     private static Map<String, Map<String, String>> UsrBasMap = null;
+    //C 网爱好映射
+    private static Map<String, Map<String, String>> CNetbhvr = null;
+
+    private Map<String, Map<String, String>> setUsrCNetbhvr() throws JSONException {
+        Map<String, Map<String, String>> map = Maps.newHashMap();
+        String s = FileUtil.ReadFile("C:\\Users\\yun\\Desktop\\json\\curl.json");
+        BeanUtil.json2DoubleMap(new JSONObject(s), map);
+        CNetbhvr = map;
+        return CNetbhvr;
+    }
+
+    public Map<String, String> getUsrCNetbhvr(String key) throws JSONException {
+        if (null == CNetbhvr) {
+            CNetbhvr = setUsrCNetbhvr();
+        }
+        return CNetbhvr.get(key);
+    }
+
 
     private Map<String, Map<String, String>> setUsrBasMap() throws JSONException {
         Map<String, Map<String, String>> map = Maps.newHashMap();

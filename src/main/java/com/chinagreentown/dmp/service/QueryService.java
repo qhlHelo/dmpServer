@@ -69,7 +69,7 @@ public class QueryService {
         userInfo.setPhoneBrand(FakeData.getPhoneBand(phonenum));
         userInfo.setSex(FakeData.getSex(phonenum));
         userInfo.setWork(FakeData.getwork(phonenum));
-        userInfo.setPhonenum(FakeData.getMa5Phone(phonenum));
+        userInfo.setPhonenum(phonenum);
         userInfo.setNetBehavior(this.getNetBehavior(phonenum));
         return userInfo;
     }
@@ -83,11 +83,14 @@ public class QueryService {
         userInfo.setPhoneBrand(FakeData.getPhoneBand(phonenum));
         userInfo.setSex(FakeData.getSex(phonenum));
         userInfo.setWork(FakeData.getwork(phonenum));
-        userInfo.setPhonenum(FakeData.getMa5Phone(phonenum));
+        userInfo.setPhonenum(phonenum);
         userInfo.setNetBehavior(this.getNetBehavior(phonenum));
         userInfo.setMarriage(FakeData.getmarriage(phonenum));
         userInfo.setHascar(FakeData.gethascar(phonenum));
         userInfo.setBear(FakeData.getBear(phonenum));
+        userInfo.setPhoneModel("红米");
+        userInfo.setPhonePrice("1234.23");
+        userInfo.setPurchasepurpose("投资");
         return userInfo;
     }
 

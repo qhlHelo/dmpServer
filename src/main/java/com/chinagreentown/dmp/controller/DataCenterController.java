@@ -1,7 +1,9 @@
 package com.chinagreentown.dmp.controller;
 
+import com.chinagreentown.dmp.Constant.Result;
 import com.chinagreentown.dmp.service.QueryService;
 import com.chinagreentown.dmp.util.FakeData;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -32,25 +36,32 @@ public class DataCenterController {
      * @version 1.0 版本号
      * @author zyy
      */
-    public ResponseEntity<Map<String, Object>> getportrait(@RequestParam(value = "phonenum") String phonenums,
-                                                           @RequestParam(value = "date") String date,
-                                                           @RequestParam(value = "token") String token) {
+    public ResponseEntity<Object> getportrait(@RequestParam(value = "phonenum") String phonenums,
+                                              @RequestParam(value = "date") String date,
+                                              @RequestParam(value = "token") String token) {
         try {
-            Map<String, Object> list = Maps.newHashMap();
+            ArrayList<Object> lists = Lists.newArrayList();
             if (token.equals("test") && null != date && null != date) {
                 String[] phones = phonenums.split(",");
                 for (String str : phones) {
-                    String ma5Phone = FakeData.getMa5Phone(str);
-                    if (!ma5Phone.isEmpty()) {
-                        list.put(ma5Phone, query.getUserBaseInfo(str));
-                    } else {
-                        list.put(str, FakeData.HttpStr.PHONEERROR.toString());
+                    if (str.length() == 11) {
+                        String ma5Phone = FakeData.getMa5Phone(str);
+                        if (!ma5Phone.isEmpty()) {
+                            lists.add(query.getuUerInfo(str));
+                        }
+                    } else if (str.length() == 32) {
+                        lists.add(query.getuUerInfo("18968102733"));
                     }
                 }
-                return ResponseEntity.ok(list);
+                if (!lists.isEmpty()) {
+                    return ResponseEntity.ok(Result.Success(lists));
+                } else {
+                    return ResponseEntity.ok(Result.SuccessEmpty());
+                }
             }
-            list.put("Reason", "parameter error");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(list);
+            HashMap<Object, Object> objectObjectHashMap = Maps.newHashMap();
+            objectObjectHashMap.put("Reason", "parameter error");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(objectObjectHashMap);
         } catch (Exception e) {
             e.printStackTrace();
         }

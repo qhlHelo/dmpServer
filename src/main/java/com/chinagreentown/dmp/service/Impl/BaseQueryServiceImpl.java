@@ -25,7 +25,7 @@ import java.util.List;
 @Service
 public class BaseQueryServiceImpl implements BaseQueryService {
 
-    private final static String usr_c_net_bhvr = "usr_c_net_bhvr";
+
 
     @Autowired
     private HbaseTemplate hbaseservice;
@@ -35,8 +35,8 @@ public class BaseQueryServiceImpl implements BaseQueryService {
     private final static String USRPOI = "usr_poi_info";
     //attr  表
     private final static String USERATTR = "usr_bas_attr";
-    //poi  表
-    private final static String USRPOIINFO = "usr_poi_info";
+    //net爱好
+    private final static String usr_c_net_bhvr = "usr_c_net_bhvr";
 
     @Override
     public List<com> getUsrCom(String family, FilterList list) {
@@ -67,7 +67,11 @@ public class BaseQueryServiceImpl implements BaseQueryService {
 
     @Override
     public List<bhvr> getUsrBhvr(String family, FilterList list) {
-        return null;
+        Scan scan = new Scan();
+        scan.setFilter(list);
+        scan.addFamily(Bytes.toBytes(family));
+        List<bhvr> bhvrs = hbaseservice.find(usr_c_net_bhvr, scan, new UsrCNetBhvrMapper());
+        return bhvrs;
     }
 
 

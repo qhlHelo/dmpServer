@@ -2,8 +2,8 @@ package com.chinagreentown.dmp.service.Impl;
 
 import com.chinagreentown.dmp.Cache.SystemCache;
 import com.chinagreentown.dmp.pojo.ComInfoPojo.com;
-import com.chinagreentown.dmp.pojo.UserInfo;
 import com.chinagreentown.dmp.pojo.UsrBasAttrPojo.attr;
+import com.chinagreentown.dmp.pojo.UsrCNetBhvrPojo.bhvr;
 import com.chinagreentown.dmp.pojo.UsrPoiInfoPojo.poi;
 import com.chinagreentown.dmp.service.BaseQueryService;
 import com.chinagreentown.dmp.service.PrecisionMarketingService;
@@ -37,10 +37,12 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         RowFilter rf = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(date));
         filterList.addFilter(rf);
-        ByteArrayComparable comparator = new RegexStringComparator("83dbaf4d37d7e9befa22fa7ec4f76b8e|ece459f750dd6c86003dddc6bd52cf83|c3b374c89508281f94883e6909545faf");
+        ByteArrayComparable comparator = new RegexStringComparator(BeanUtil.getRegexPhoneNums(phoneNum));
         SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter("attr".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, comparator);
         filterList.addFilter(singleColumnValueFilter);
+        System.out.println("--------------start");
         List<attr> attrs = basequery.getUserAttr("attr", filterList);//获取用户基本信息列表
+        System.out.println("--------------stop");
         //通信信息过滤器
         FilterList comFilters = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         comFilters.addFilter(rf);
@@ -53,6 +55,13 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
         SingleColumnValueFilter locationFilter = new SingleColumnValueFilter("poi".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, comparator);
         locationFlilters.addFilter(locationFilter);
         List<poi> pois = basequery.getUsrPoiInfo("poi", locationFlilters);//获取位置信息数据
+        //应用偏好过滤器
+        FilterList cNetFlilters = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+        comFilters.addFilter(rf);
+        SingleColumnValueFilter cNetFilter = new SingleColumnValueFilter("bhvr".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, comparator);
+        cNetFlilters.addFilter(cNetFilter);
+        List<bhvr> bhvr = basequery.getUsrBhvr("bhvr", cNetFlilters);
+        Map<String, Object> usrCnetBehvr = this.getUsrCnetBehvr(bhvr);
         //用户信息转换为dto
         Map<String, Object> userAttrDTO = this.getUserAttrDTO(attrs);
         Map<String, Object> conMapDTO = this.getConMapDTO(usrComs);
@@ -83,9 +92,21 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
             }
             usrMap.put("BAS", usrBasMap);
             returnMap.put(str, usrMap);
+            returnMap.put("netBehavior", usrCnetBehvr.get(str));
         }
 
         return returnMap;
+    }
+
+    @Override
+    public Object getEsateMicro(String date, String esateCode) {
+        FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+        RowFilter rf = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(date));
+        filterList.addFilter(rf);
+        SubstringComparator cpmparator = new SubstringComparator("wu");
+        new SingleColumnValueExcludeFilter("attr".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, cpmparator);
+
+        return null;
     }
 
     @Override
@@ -190,6 +211,48 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
             HashMap<String, Object> map = Maps.newHashMap();
             map.put("p_work", p_live);
             ReturnMap.put(poiEnity.getEncryption_tel(), map);
+        }
+        return ReturnMap;
+    }
+
+    @Override
+    public Map<String, Object> getUsrCnetBehvr(List<bhvr> bhvrs) throws IllegalAccessException, JSONException {
+        HashMap<String, Object> ReturnMap = Maps.newHashMap();
+        for (bhvr bhvrEnity : bhvrs) {
+            HashMap<String, Object> cNetMap = Maps.newHashMap();
+            Field[] fields = bhvr.class.getDeclaredFields();
+            for (Field filed : fields) {
+                filed.setAccessible(true);
+                Object f = filed.get(bhvrEnity);
+                if (null != f) {
+                    String s = f.toString();
+                    if (!filed.getName().equals("encryption_tel")) {
+                        Map<String, Map<String, String>> stringMapMap = BeanUtil.json2DoubleMap(new JSONObject(s), Maps.newHashMap());
+                        Set<String> key1s = stringMapMap.keySet();
+                        for (String times : key1s) {
+                            Map<String, String> inmap = stringMapMap.get(times);
+                            Set<String> keys2 = inmap.keySet();
+                            String key = null;
+                            Map<String, Object> stringObjectMap = Maps.newHashMap();
+                            for (String times2 : keys2) {
+                                String s1 = inmap.get(times2);
+                                Map<String, String> usrCNetbhvr = SystemCache.getInstance().getUsrCNetbhvr(times2);
+                                stringObjectMap = BeanUtil.jsonMap2map(usrCNetbhvr);
+                                stringObjectMap.put("pv", s1);
+                                if (key == null && null != usrCNetbhvr && !usrCNetbhvr.isEmpty()) {
+                                    if (usrCNetbhvr.containsKey("01")) {
+                                        key = new JSONObject(usrCNetbhvr.get("01")).keys().next().toString();
+                                    }
+                                }
+                            }
+                            if (null != key) {
+                                cNetMap.put(key, stringObjectMap);
+                            }
+                        }
+                    }
+                }
+            }
+            ReturnMap.put(bhvrEnity.getEncryption_tel(), cNetMap);
         }
         return ReturnMap;
     }
