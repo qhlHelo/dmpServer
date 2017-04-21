@@ -3,12 +3,7 @@ package com.chinagreentown.dmp.boot;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * JThink@JThink
- *
- * @author JThink
- * @version 0.0.1
- * @desc
- * @date 2016-11-16 14:51:42
+ * @desc hbase属性配置
  */
 @ConfigurationProperties(prefix = "spring.data.hbase")
 public class HbaseProperties {
