@@ -1,5 +1,6 @@
 package com.chinagreentown.dmp.api;
 
+
 import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Scan;
 
@@ -32,13 +33,13 @@ public interface HbaseOperations {
      * Scans the target table, using the given column family.
      * The content is processed row by row by the given action, returning a list of domain objects.
      *
+     * @param <T>       mapper type
      * @param tableName target table
      * @param family
-     * @param mapper    row mapper
-     * @param <T>       mapper type
+     * @param action    row mapper
      * @return a list of objects mapping the scanned rows
      */
-    <T> List<T> find(String tableName, String family, final RowMapper<T> mapper);
+    <T> List<T> find(String tableName, String family, final RowMapper<T> action);
 
 
     /**

@@ -10,6 +10,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 public class attr {
+    String rowName;
+
+
     //名字
     private String name;
     //性别
@@ -75,6 +78,16 @@ public class attr {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public String getRowName() {
+
+        return rowName;
+    }
+
+    public void setRowName(String rowName) {
+        this.rowName = rowName;
     }
 
     public String getGender() {

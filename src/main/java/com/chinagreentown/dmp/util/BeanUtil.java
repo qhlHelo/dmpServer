@@ -116,7 +116,10 @@ public class BeanUtil {
 
             }
         }
-        return sb.substring(0, sb.length() - 1);
+        if (!sb.isEmpty()) {
+            return sb.substring(0, sb.length() - 1);
+        }
+        return "";
     }
 
 

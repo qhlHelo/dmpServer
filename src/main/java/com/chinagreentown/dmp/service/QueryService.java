@@ -1,5 +1,6 @@
 package com.chinagreentown.dmp.service;
 
+import com.chinagreentown.dmp.Cache.SystemCache;
 import com.chinagreentown.dmp.Mapper.PeopleRowMapper;
 import com.chinagreentown.dmp.api.HbaseTemplate;
 import com.chinagreentown.dmp.pojo.PeopleDto;
@@ -237,7 +238,8 @@ public class QueryService {
 
 
     public static void main(String[] args) {
-        QueryService queryService = new QueryService();
-        System.out.println(queryService.houseMacrography(2));
+//        SystemCache
+//        QueryService queryService = new QueryService();
+//        System.out.println(queryService.houseMacrography(2));
     }
 }

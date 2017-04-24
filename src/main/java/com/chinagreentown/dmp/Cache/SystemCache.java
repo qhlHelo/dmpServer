@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by yun on 2017/4/18.
@@ -43,6 +44,40 @@ public class SystemCache {
     private static Map<String, Map<String, String>> UsrBasMap = null;
     //C 网爱好映射
     private static Map<String, Map<String, String>> CNetbhvr = null;
+    //G 网爱好映射
+    private static Map<String, Map<String, String>> FixNetbhvr = null;
+    //token 存放
+    private static String token = null;
+
+
+    public Map<String, Map<String, String>> setUsrFixNetbhvr() throws JSONException {
+        Map<String, Map<String, String>> map = Maps.newHashMap();
+        String s = FileUtil.ReadFile("C:\\Users\\yun\\Desktop\\json\\GURL.json");
+        BeanUtil.json2DoubleMap(new JSONObject(s), map);
+        FixNetbhvr = map;
+        return FixNetbhvr;
+    }
+
+    public Map<String, String> getUsrFixNetbhvr(String key) throws JSONException {
+        if (null == FixNetbhvr) {
+            FixNetbhvr = setUsrCNetbhvr();
+        }
+        return FixNetbhvr.get(key);
+    }
+
+    public String getToken() {
+        if (null == token) {
+            UUID uuid = UUID.randomUUID();
+            token = setToken("fc88cf15207649938555b0c0859b75a8");
+        }
+        return token;
+    }
+
+
+    private String setToken(String uuid) {
+        token = uuid;
+        return token;
+    }
 
     private Map<String, Map<String, String>> setUsrCNetbhvr() throws JSONException {
         Map<String, Map<String, String>> map = Maps.newHashMap();
@@ -51,6 +86,7 @@ public class SystemCache {
         CNetbhvr = map;
         return CNetbhvr;
     }
+
 
     public Map<String, String> getUsrCNetbhvr(String key) throws JSONException {
         if (null == CNetbhvr) {

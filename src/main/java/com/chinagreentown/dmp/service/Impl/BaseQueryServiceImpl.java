@@ -1,9 +1,6 @@
 package com.chinagreentown.dmp.service.Impl;
 
-import com.chinagreentown.dmp.Mapper.UsrBasAttrMapper;
-import com.chinagreentown.dmp.Mapper.UsrCNetBhvrMapper;
-import com.chinagreentown.dmp.Mapper.UsrComInfoMapper;
-import com.chinagreentown.dmp.Mapper.UsrPoiInfoMapper;
+import com.chinagreentown.dmp.Mapper.*;
 import com.chinagreentown.dmp.api.HbaseTemplate;
 import com.chinagreentown.dmp.pojo.ComInfoPojo.com;
 import com.chinagreentown.dmp.pojo.UsrBasAttrPojo.attr;
@@ -13,6 +10,7 @@ import com.chinagreentown.dmp.service.BaseQueryService;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FilterList;
+import org.apache.hadoop.hbase.filter.PageFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +22,6 @@ import java.util.List;
  */
 @Service
 public class BaseQueryServiceImpl implements BaseQueryService {
-
 
 
     @Autowired
@@ -57,6 +54,25 @@ public class BaseQueryServiceImpl implements BaseQueryService {
     }
 
     @Override
+    public List<poi> getUsrPoiInfo(String family, String column, FilterList list) {
+        Scan scan = new Scan();
+        scan.setFilter(list);
+        scan.addFamily(Bytes.toBytes(family));
+        scan.addColumn(Bytes.toBytes(family), Bytes.toBytes(column));
+        List<poi> pois = hbaseservice.find(USRPOI, scan, new UsrPoiInfoMapper());
+        return pois;
+    }
+
+    @Override
+    public List<attr> getUserAttr(String startrow, String family, FilterList list) {
+        Scan scan = new Scan(startrow.getBytes());
+        scan.setFilter(list);
+        scan.addFamily(Bytes.toBytes(family));
+        List<attr> attrs = hbaseservice.find(USERATTR, scan, new UsrBasAttrMapper());
+        return attrs;
+    }
+
+    @Override
     public List<attr> getUserAttr(String family, FilterList list) {
         Scan scan = new Scan();
         scan.setFilter(list);
@@ -64,6 +80,8 @@ public class BaseQueryServiceImpl implements BaseQueryService {
         List<attr> attrs = hbaseservice.find(USERATTR, scan, new UsrBasAttrMapper());
         return attrs;
     }
+
+
 
     @Override
     public List<bhvr> getUsrBhvr(String family, FilterList list) {
@@ -73,6 +91,20 @@ public class BaseQueryServiceImpl implements BaseQueryService {
         List<bhvr> bhvrs = hbaseservice.find(usr_c_net_bhvr, scan, new UsrCNetBhvrMapper());
         return bhvrs;
     }
+
+    @Override
+    public String getFirstData(String tableName) {
+        PageFilter pageFilter = new PageFilter(1);
+        Scan scan = new Scan();
+        scan.setFilter(pageFilter);
+        List<String> strings = hbaseservice.find(tableName, scan, new RowNameMapper());
+        if(null!=strings){
+            return strings.get(0);
+        }
+        return "";
+    }
+
+
 
 
 }

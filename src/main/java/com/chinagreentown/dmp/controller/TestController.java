@@ -24,7 +24,7 @@ public class TestController {
 
     @RequestMapping(value = "/1", method = RequestMethod.GET)
     public ResponseEntity<Object> test1() throws IOException, NoSuchFieldException, JSONException, IllegalAccessException {
-        Object usrLabelInfo = testservice.getUsrLabelInfo("09223370");
+        Object usrLabelInfo = testservice.getRecentlyUserLabel(15,1,null,null);
         return ResponseEntity.ok(usrLabelInfo);
 
     }

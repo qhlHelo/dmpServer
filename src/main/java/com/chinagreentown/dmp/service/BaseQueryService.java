@@ -33,6 +33,9 @@ public interface BaseQueryService {
      */
     List<poi> getUsrPoiInfo(String familly, FilterList list);
 
+
+    List<poi> getUsrPoiInfo(String familly, String column,FilterList list);
+
     /**
      * 获取用户基本信息
      *
@@ -42,6 +45,8 @@ public interface BaseQueryService {
      */
     List<attr> getUserAttr(String familly, FilterList list);
 
+    List<attr> getUserAttr(String startrow,String familly, FilterList list);
+
 
     /**
      * @param family 获取列族
@@ -50,5 +55,11 @@ public interface BaseQueryService {
      */
     List<bhvr> getUsrBhvr(String family, FilterList list);
 
+    /**
+     * 获取第一行rowKey
+     * @param tableName
+     * @return
+     */
+    String getFirstData(String tableName);
 
 }
