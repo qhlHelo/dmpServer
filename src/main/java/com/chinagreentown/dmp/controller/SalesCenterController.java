@@ -99,15 +99,8 @@ public class SalesCenterController {
                     baseInfo.setSalesnum(FakeData.getPhoneList2().get(i.intValue() % 5));
                     // 对象创建成功，响应201
                     return ResponseEntity.ok(Result.Success(baseInfo));
-                }
-                else if(ma5Phone.isEmpty()){
-                    phonenum="18988888888";
-                    long l = Long.parseLong(phonenum);
-                    baseInfo.setPhonenum(phonenum);
-                    Long i = l % 199;
-                    baseInfo.setSalesnum(FakeData.getPhoneList2().get(i.intValue() % 5));
-                    // 对象创建成功，响应201
-                    return ResponseEntity.ok(Result.Success(baseInfo));
+                } else if (ma5Phone.isEmpty()) {
+
                 }
                 return ResponseEntity.ok(Result.SuccessEmpty());
             }
@@ -184,15 +177,8 @@ public class SalesCenterController {
                     baseInfo.setSalesnum(FakeData.getPhoneList2().get(i.intValue() % 5));
                     // 对象创建成功，响应201
                     return ResponseEntity.ok(Result.Success(baseInfo));
-                }
-                else if(ma5Phone.isEmpty()){
-                    phonenum="18988888888";
-                    long l = Long.parseLong(phonenum);
-                    baseInfo.setPhonenum(phonenum);
-                    Long i = l % 199;
-                    baseInfo.setSalesnum(FakeData.getPhoneList2().get(i.intValue() % 5));
-                    // 对象创建成功，响应201
-                    return ResponseEntity.ok(Result.Success(baseInfo));
+                } else if (ma5Phone.isEmpty()) {
+
                 }
                 return ResponseEntity.ok(Result.SuccessEmpty());
             }
@@ -267,15 +253,8 @@ public class SalesCenterController {
                     baseInfo.setSalesnum(FakeData.getPhoneList2().get(i.intValue() % 5));
                     // 对象创建成功，响应201
                     return ResponseEntity.ok(Result.Success(baseInfo));
-                }
-                else if(ma5Phone.isEmpty()){
-                    phonenum="18988888888";
-                    long l = Long.parseLong(phonenum);
-                    baseInfo.setPhonenum(phonenum);
-                    Long i = l % 199;
-                    baseInfo.setSalesnum(FakeData.getPhoneList2().get(i.intValue() % 5));
-                    // 对象创建成功，响应201
-                    return ResponseEntity.ok(Result.Success(baseInfo));
+                } else if (ma5Phone.isEmpty()) {
+
                 }
                 return ResponseEntity.ok(Result.SuccessEmpty());
             }
