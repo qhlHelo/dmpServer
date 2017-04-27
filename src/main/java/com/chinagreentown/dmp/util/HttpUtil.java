@@ -40,7 +40,7 @@ public class HttpUtil {
                 System.out.println(key + "--->" + map.get(key));
             }
             // 定义BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
 
             String line;
             while ((line = in.readLine()) != null) {
@@ -84,6 +84,24 @@ public class HttpUtil {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static void main(String[] args) throws JSONException {
+        System.out.println(getPhoneArea("18968102733"));
+    }
+
+    private final static String url = "http://sj.apidata.cn/";
+
+    public static String getPhoneArea(String phone) throws JSONException {
+        try {
+            String s = sendGet(url, "mobile="+phone);
+            JSONObject s1 = new JSONObject(s);
+            System.out.println(s1);
+            return s1.getJSONObject("data").getString("city");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "not find";
     }
 
 }

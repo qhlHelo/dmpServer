@@ -81,7 +81,7 @@ public class BeanUtil {
 
     //value 为json 的转换为一个map,取最低和最高的
     public static Map<String, Object> jsonMap2map(Map<String, String> map) throws JSONException {
-        if(map==null){
+        if (map == null) {
             return Maps.newHashMap();
         }
         Map<String, Object> ObjectMap = Maps.newHashMap();
@@ -103,26 +103,28 @@ public class BeanUtil {
     }
 
 
-    public static String getGetPhoneNums(String phoneNums) {
+    public static String getRegexPhoneNums(String phoneNums) {
         String[] split = phoneNums.split(",");
-        String sb="";
+        String sb = "";
         for (String str : split) {
             if (findPhone(str)) {
                 String s = HttpUtil.phoneEncrypt(str);
                 if (null != s && !s.isEmpty()) {
-                    sb=s+"|"+sb;
+                    sb = s + "|" + sb;
 
                 }
 
             }
         }
-        return sb.substring(0,sb.length()-1);
+        if (!sb.isEmpty()) {
+            return sb.substring(0, sb.length() - 1);
+        }
+        return "";
     }
 
 
     public static void main(String[] args) throws Exception {
-        System.out.println(getGetPhoneNums("18968102733,18967543422"));
-
+        System.out.println(getRegexPhoneNums("18968102733,18967543422"));
     }
 
 }

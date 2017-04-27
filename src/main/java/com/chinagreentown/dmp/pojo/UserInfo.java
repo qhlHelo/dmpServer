@@ -31,11 +31,41 @@ public class UserInfo extends UserBaseInfo {
         this.hascar = hascar;
     }
 
+    public String getPhoneModel() {
+        return phoneModel;
+    }
+
+    public void setPhoneModel(String phoneModel) {
+        this.phoneModel = phoneModel;
+    }
+
+    public String getPhonePrice() {
+        return phonePrice;
+    }
+
+    public void setPhonePrice(String phonePrice) {
+        this.phonePrice = phonePrice;
+    }
+
+    public String getPurchasepurpose() {
+        return purchasepurpose;
+    }
+
+    public void setPurchasepurpose(String purchasepurpose) {
+        this.purchasepurpose = purchasepurpose;
+    }
+
     //是否已婚
     private String marriage;
     //是否生育
     private String bear;
     //是否有车
     private String hascar;
+    //电话型号
+    private String phoneModel;
+    //电话价格
+    private String phonePrice;
+    //购房用途
+    private String purchasepurpose;
 
 }

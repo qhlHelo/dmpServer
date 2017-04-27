@@ -1,13 +1,12 @@
 package com.chinagreentown.dmp.controller;
 
+import com.chinagreentown.dmp.Cache.SystemCache;
+import com.chinagreentown.dmp.Constant.Result;
 import com.chinagreentown.dmp.pojo.PeopleDto;
-import com.chinagreentown.dmp.pojo.precisionmarketing.BasicInfo;
-import com.chinagreentown.dmp.pojo.precisionmarketing.CNetwork;
-import com.chinagreentown.dmp.pojo.precisionmarketing.FixedNetwork;
-import com.chinagreentown.dmp.pojo.precisionmarketing.Shopping;
-import com.chinagreentown.dmp.pojo.precisionmarketing.UserPortrait;
-import com.chinagreentown.dmp.pojo.precisionmarketing.Purchase;
+import com.chinagreentown.dmp.pojo.precisionmarketing.*;
+import com.chinagreentown.dmp.service.PrecisionMarketingService;
 import com.chinagreentown.dmp.service.QueryService;
+import com.chinagreentown.dmp.util.BeanUtil;
 import com.chinagreentown.dmp.util.FakeData;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +35,8 @@ public class PrecisionMarketing {
 
     @Autowired
     private QueryService queryService;
+    @Autowired
+    private PrecisionMarketingService marketservice;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PrecisionMarketing.class);
 
@@ -121,10 +121,8 @@ public class PrecisionMarketing {
                                                  @RequestParam(value = "date") String date) {
         try {
             if (null != estatecode && token.equals("test") && null != date) {
-                if (FakeData.isNum(estatecode)) {
-                    Map<String, String> liveMaps = queryService.getworkMaps(Integer.parseInt(estatecode));
-                    return ResponseEntity.ok(liveMaps);
-                }
+                Map<String, Object> esateUserPOILive = marketservice.getEsateUsersPOIWork(date, estatecode);
+                return ResponseEntity.ok(esateUserPOILive);
             }
             HashMap<String, String> Map = Maps.newHashMap();
             Map.put("Reason", FakeData.HttpStr.PARAMETERERROR.toString());
@@ -142,10 +140,9 @@ public class PrecisionMarketing {
                                                @RequestParam(value = "date") String date) {
         try {
             if (null != estatecode && token.equals("test") && null != date) {
-                if (FakeData.isNum(estatecode)) {
-                    Map<String, String> liveMaps = queryService.getLiveMaps(Integer.parseInt(estatecode));
-                    return ResponseEntity.ok(liveMaps);
-                }
+                Map<String, Object> esateUserPOILive = marketservice.getEsateUserPOILive(date, estatecode);
+                return ResponseEntity.ok(esateUserPOILive);
+
             }
             HashMap<String, String> Map = Maps.newHashMap();
             Map.put("Reason", FakeData.HttpStr.PARAMETERERROR.toString());
@@ -158,25 +155,56 @@ public class PrecisionMarketing {
 
 
     @RequestMapping(value = "/label/v1.0", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> getUserLabel(@RequestParam(value = "phonenum") String phonenum,
-                                                            @RequestParam(value = "date") String date,
-                                                            @RequestParam(value = "token") String token) {
+    public ResponseEntity<Object> getUserLabel(@RequestParam(value = "phonenums") String phonenum,
+                                               @RequestParam(value = "date") String date,
+                                               @RequestParam(value = "token") String token) {
         try {
             HashMap<String, Object> Map = Maps.newHashMap();
-            if (null != phonenum && token.equals("test") && null != date) {
-                String[] split = phonenum.split(",");
-                for (String str : split) {
-                    if (!FakeData.getMa5Phone(str).isEmpty()) {
-                        Map.put(FakeData.getMa5Phone(str), queryService.getlabelUserinfo(str));
-                    } else {
-                        Map.put(str, FakeData.HttpStr.PHONEERROR.toString());
-                    }
+            if (null != phonenum && token.equals(SystemCache.getInstance().getToken()) && null != date) {
+                String regexPhoneNums = BeanUtil.getRegexPhoneNums(phonenum);
+                if (regexPhoneNums.isEmpty()) {
+                    regexPhoneNums = phonenum.replace(",", "|");
                 }
-                return ResponseEntity.ok(Map);
+                java.util.Map<String, Object> usrLabelInfo = marketservice.getUsrLabelInfo(date, regexPhoneNums);
+                if (usrLabelInfo.isEmpty()) {
+                    return ResponseEntity.ok(Result.SuccessEmpty());
+                }
+                return ResponseEntity.ok(Result.Success(usrLabelInfo));
             }
             Map.put("Reason", FakeData.HttpStr.PARAMETERERROR.toString());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map);
-        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    /**
+     * 最近那一天的的画像
+     *
+     * @param
+     * @param date
+     * @param token
+     * @return
+     */
+    @RequestMapping(value = "/revently/v1.0", method = RequestMethod.POST)
+    public ResponseEntity<Object> revently(@RequestParam(value = "date", required = false) String date,
+                                           @RequestParam(value = "lastkey", required = false) String lastkey,
+                                           @RequestParam(value = "pageSize") Integer pageSize,
+                                           @RequestParam(value = "token") String token,
+                                           @RequestParam(value = "pageIndex") Integer pageIndex) {
+        try {
+            if (null != pageSize && token.equals(SystemCache.getInstance().getToken()) && pageIndex != null) {
+                java.util.Map<String, Object> usrLabelInfo = marketservice.getRecentlyUserLabel(pageSize, pageIndex, date, lastkey);
+                if (usrLabelInfo.isEmpty()) {
+                    return ResponseEntity.ok(Result.SuccessEmpty());
+                }
+                return ResponseEntity.ok(Result.Success(usrLabelInfo));
+            }
+            HashMap<String, Object> Map = Maps.newHashMap();
+            Map.put("Reason", FakeData.HttpStr.PARAMETERERROR.toString());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -202,6 +230,7 @@ public class PrecisionMarketing {
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
 
     @RequestMapping(value = "/estate/v1.0")
     public ResponseEntity<Map<String, Object>> getEstate(@RequestParam(value = "estatecode") String estatecode,

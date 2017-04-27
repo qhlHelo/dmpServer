@@ -1,5 +1,6 @@
 package com.chinagreentown.dmp.controller;
 
+import com.chinagreentown.dmp.Constant.Result;
 import com.chinagreentown.dmp.pojo.salescenter.BaseInfo;
 import com.chinagreentown.dmp.pojo.salescenter.Phone;
 import com.chinagreentown.dmp.pojo.salescenter.SalesLabel;
@@ -15,10 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by admin on 2017/3/29.
@@ -83,14 +82,13 @@ public class SalesCenterController {
                                                @RequestParam(value = "phonebrand") String phonebrand,
                                                @RequestParam(value = "mac") String macaddress,
                                                @RequestParam(value = "salescenterid") String salescenterid,
-                                               @RequestParam(value = "time") String time, @RequestParam(value = "date") String date) {
+                                               @RequestParam(value = "time") String time) {
         try {
             HashMap<String, String> map = Maps.newHashMap();
-            if (token.equals("test") && null != phonebrand && null != salescenterid && null != time && null != date) {
+            if (token.equals("test") && null != phonebrand && null != salescenterid && null != time && null != macaddress) {
                 BaseInfo baseInfo = new BaseInfo();
-                if (null == phonenum) {
-                    int a = phonebrand.length() * 199;
-                    phonenum = FakeData.getPhoneList().get(a % 5);
+                if (null == phonenum || phonenum.isEmpty()) {
+                    return ResponseEntity.ok(Result.SuccessEmpty());
                 }
                 String ma5Phone = FakeData.getMa5Phone(phonenum);
                 if (!ma5Phone.isEmpty()) {
@@ -99,14 +97,15 @@ public class SalesCenterController {
                     Long i = l % 199;
                     baseInfo.setSalesnum(FakeData.getPhoneList2().get(i.intValue() % 5));
                     // 对象创建成功，响应201
-                    return ResponseEntity.status(HttpStatus.CREATED).body(baseInfo);
+                    return ResponseEntity.ok(Result.Success(baseInfo));
+                } else if (ma5Phone.isEmpty()) {
+
                 }
-                map.put(phonenum, "phone error");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+                return ResponseEntity.ok(Result.SuccessEmpty());
             }
             map.put("Reason", "parameter error");
             //参数错误
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(map);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -160,15 +159,13 @@ public class SalesCenterController {
                                                  @RequestParam(value = "token") String token,
                                                  @RequestParam(value = "platenum") String platenum,
                                                  @RequestParam(value = "salescenterid") String salescenterid,
-                                                 @RequestParam(value = "time") String time,
-                                                 @RequestParam(value = "date") String date) {
+                                                 @RequestParam(value = "time") String time) {
         try {
             HashMap<String, String> map = Maps.newHashMap();
-            if (token.equals("test") && null != platenum && null != salescenterid && null != time && null != date) {
+            if (token.equals("test") && null != platenum && null != salescenterid && null != time) {
                 BaseInfo baseInfo = new BaseInfo();
-                if (null == phonenum) {
-                    int a = platenum.length() * 199;
-                    phonenum = FakeData.getPhoneList().get(a % 5);
+                if (null == phonenum || phonenum.isEmpty()) {
+                    return ResponseEntity.ok(Result.SuccessEmpty());
                 }
                 String ma5Phone = FakeData.getMa5Phone(phonenum);
                 if (!ma5Phone.isEmpty()) {
@@ -177,14 +174,15 @@ public class SalesCenterController {
                     Long i = l % 199;
                     baseInfo.setSalesnum(FakeData.getPhoneList2().get(i.intValue() % 5));
                     // 对象创建成功，响应201
-                    return ResponseEntity.status(HttpStatus.CREATED).body(baseInfo);
+                    return ResponseEntity.ok(Result.Success(baseInfo));
+                } else if (ma5Phone.isEmpty()) {
+
                 }
-                map.put(phonenum, "phone error");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+                return ResponseEntity.ok(Result.SuccessEmpty());
             }
             map.put("Reason", "parameter error");
             //参数错误
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(map);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -199,7 +197,6 @@ public class SalesCenterController {
      *
      * @param phonenum
      * @param token
-     * @param faceurl
      * @param salescenterid
      * @param time
      * @return ResponseEntity<BaseInfo>
@@ -207,7 +204,6 @@ public class SalesCenterController {
     @RequestMapping(value = "/face", method = RequestMethod.POST)
     public ResponseEntity<BaseInfo> face(@RequestParam(value = "phonenum", required = false) String phonenum,
                                          @RequestParam(value = "token") String token,
-                                         @RequestParam(value = "faceurl") String faceurl,
                                          @RequestParam(value = "salescenterid") String salescenterid,
                                          @RequestParam(value = "time") String time) {
         try {
@@ -228,7 +224,6 @@ public class SalesCenterController {
      *
      * @param phonenum
      * @param token
-     * @param faceurl
      * @param salescenterid
      * @param time
      * @return ResponseEntity<BaseInfo>
@@ -236,19 +231,17 @@ public class SalesCenterController {
      * @Date 时间格式20170410
      */
     @RequestMapping(value = "/face/v1.0", method = RequestMethod.POST)
-    public ResponseEntity<Object> face(@RequestParam(value = "phonenum", required = false) String phonenum,
-                                       @RequestParam(value = "token") String token,
-                                       @RequestParam(value = "faceurl") String faceurl,
-                                       @RequestParam(value = "salescenterid") String salescenterid,
-                                       @RequestParam(value = "time") String time,
-                                       @RequestParam(value = "date") String date) {
+    public ResponseEntity<Object> faceV1(@RequestParam(value = "phonenum", required = true) String phonenum,
+                                         @RequestParam(value = "token") String token,
+                                         @RequestParam(value = "salescenterid") String salescenterid,
+                                         @RequestParam(value = "time") String time
+    ) {
         try {
             HashMap<String, String> map = Maps.newHashMap();
-            if (token.equals("test") && null != faceurl && null != salescenterid && null != time && null != date) {
+            if (token.equals("test") && null != salescenterid && null != time) {
                 BaseInfo baseInfo = new BaseInfo();
-                if (null == phonenum) {
-                    int a = faceurl.length() * 199;
-                    phonenum = FakeData.getPhoneList().get(a % 5);
+                if (null == phonenum || phonenum.isEmpty()) {
+                    phonenum = FakeData.getPhoneList().get((int) (Long.parseLong(phonenum) % 5));
                 }
                 String ma5Phone = FakeData.getMa5Phone(phonenum);
                 if (!ma5Phone.isEmpty()) {
@@ -257,14 +250,15 @@ public class SalesCenterController {
                     Long i = l % 199;
                     baseInfo.setSalesnum(FakeData.getPhoneList2().get(i.intValue() % 5));
                     // 对象创建成功，响应201
-                    return ResponseEntity.status(HttpStatus.CREATED).body(baseInfo);
+                    return ResponseEntity.ok(Result.Success(baseInfo));
+                } else if (ma5Phone.isEmpty()) {
+
                 }
-                map.put(phonenum, "phone error");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+                return ResponseEntity.ok(Result.SuccessEmpty());
             }
             map.put("Reason", "parameter error");
             //参数错误
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(map);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -327,15 +321,23 @@ public class SalesCenterController {
             if (null != phonenum && token.equals("test") && null != date) {
                 String[] phone = phonenum.split(",");
                 for (String str : phone) {
-                    String ma5Phone = FakeData.getMa5Phone(str);
-                    if (!ma5Phone.isEmpty()) {
-                        list.add(query.getuUerInfo(str));
+                    if (str.length() == 11) {
+                        String ma5Phone = FakeData.getMa5Phone(str);
+                        if (!ma5Phone.isEmpty()) {
+                            list.add(query.getuUerInfo(str));
 //                        list.put(ma5Phone, query.getuUerInfo(str));
-                    } else {
+                        } else {
 //                        list.put(str, FakeData.HttpStr.PHONEERROR.toString());
+                        }
+                    } else if (str.length() == 32) {
+                        list.add(query.getuUerInfo("18968102733"));
                     }
                 }
-                return ResponseEntity.ok(list);
+                if (!list.isEmpty()) {
+                    return ResponseEntity.ok(Result.Success(list));
+                } else {
+                    return ResponseEntity.ok(Result.SuccessEmpty());
+                }
             }
             //参数错误
             objectObjectHashMap.put("Reason", "parameter error");
