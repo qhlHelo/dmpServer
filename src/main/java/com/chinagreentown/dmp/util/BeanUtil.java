@@ -125,7 +125,6 @@ public class BeanUtil {
 
     public static void main(String[] args) throws Exception {
         System.out.println(getRegexPhoneNums("18968102733,18967543422"));
-
     }
 
 }

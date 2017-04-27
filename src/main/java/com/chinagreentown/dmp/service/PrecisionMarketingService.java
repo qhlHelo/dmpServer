@@ -28,7 +28,7 @@ public interface PrecisionMarketingService {
      * @param phoneNum
      * @return
      */
-    Map<String, Object> getLivePlace(String date, String phoneNum);
+    Map<String, Object> getLivePlace(String date, String phoneNum,String bdaccount);
 
 
     /**
@@ -38,7 +38,10 @@ public interface PrecisionMarketingService {
      * @param phoneNum
      * @return
      */
-    Map<String, Object> getWorkPlace(String date, String phoneNum);
+    Map<String, Object> getWorkPlace(String date, String phoneNum,String account);
+
+
+
 
     /**
      * 获取楼盘微观画像
@@ -47,7 +50,9 @@ public interface PrecisionMarketingService {
      * @param esateCode
      * @return
      */
-    Object getEsateMicro(String date, String esateCode);
+    Map<String, Object>  getEsateMicro(String date, String esateCode) throws IllegalAccessException, NoSuchFieldException, JSONException;
+
+    Object  getEsateInfo(String date,String EsateCode);
 
     /**
      * 根据通信对象获取 通信信息
@@ -114,11 +119,30 @@ public interface PrecisionMarketingService {
      * @param esateCode
      * @return
      */
-    Map<String ,Object>  getEsateUsersPOIWork(String esateCode);
+    Map<String ,Object>  getEsateUsersPOIWork(String date,String esateCode);
 
-    Map<String,Object>  getEsateUserPOILive(String esateCode);
+    /**
+     * 生活热力图
+     * @param date
+     * @param esateCode
+     * @return
+     */
+    Map<String,Object>  getEsateUserPOILive(String date,String esateCode);
 
+    /**
+     * 获取最近一天用户的画像图
+     * @param pageSize
+     * @param pageIndex
+     * @param Date
+     * @param lastKey
+     * @return
+     * @throws IllegalAccessException
+     * @throws NoSuchFieldException
+     * @throws JSONException
+     */
     Map<String, Object>   getRecentlyUserLabel(int pageSize,int pageIndex,String Date,String lastKey) throws IllegalAccessException, NoSuchFieldException, JSONException;
+
+
 
 
 }

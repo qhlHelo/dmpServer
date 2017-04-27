@@ -5,6 +5,7 @@ import com.chinagreentown.dmp.pojo.UsrBasAttrPojo.attr;
 import com.chinagreentown.dmp.pojo.UsrCNetBhvrPojo.bhvr;
 import com.chinagreentown.dmp.pojo.UsrPoiInfoPojo.poi;
 import com.chinagreentown.dmp.pojo.este_info.assc;
+import com.chinagreentown.dmp.pojo.este_info.bas;
 import com.chinagreentown.dmp.service.BaseQueryService;
 import com.chinagreentown.dmp.service.PrecisionMarketingService;
 import com.chinagreentown.dmp.util.BeanUtil;
@@ -110,7 +111,6 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
             SingleColumnValueFilter locationFilter = new SingleColumnValueFilter("poi".getBytes(), "bd_account".getBytes(), CompareFilter.CompareOp.EQUAL, comparator);
             locationFlilters.addFilter(locationFilter);
         }
-
         List<poi> pois = basequery.getUsrPoiInfo("poi", "p_live", locationFlilters);//获取位置信息数据
         return this.getUsrPoiInfoLive(pois);
     }
@@ -121,11 +121,13 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
         FilterList locationFlilters = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         locationFlilters.addFilter(rf);
         if (phoneNum != null) {
+            //如果有电话号码，则设置查询条件-电话号码
             ByteArrayComparable comparator = new RegexStringComparator(phoneNum);
             SingleColumnValueFilter locationFilter = new SingleColumnValueFilter("poi".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, comparator);
             locationFlilters.addFilter(locationFilter);
         }
         if (bdaccount != null) {
+            //如果有宽带账号，则设置查询条件-宽带账号
             ByteArrayComparable comparator = new RegexStringComparator(bdaccount);
             SingleColumnValueFilter locationFilter = new SingleColumnValueFilter("poi".getBytes(), "bd_account".getBytes(), CompareFilter.CompareOp.EQUAL, comparator);
             locationFlilters.addFilter(locationFilter);
@@ -136,12 +138,38 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
 
 
     @Override
-    public Object getEsateMicro(String date, String esateCode) {
+    public Map<String, Object> getEsateMicro(String date, String esateCode) throws IllegalAccessException, NoSuchFieldException, JSONException {
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         RowFilter rf = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(date));
         filterList.addFilter(rf);
-        SubstringComparator cpmparator = new SubstringComparator("wu");
-        new SingleColumnValueExcludeFilter("attr".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, cpmparator);
+        SubstringComparator cpmparator = new SubstringComparator(esateCode);
+        SingleColumnValueExcludeFilter singleColumnValueExcludeFilter = new SingleColumnValueExcludeFilter("bas".getBytes(), "house_code".getBytes(), CompareFilter.CompareOp.EQUAL, cpmparator);
+        filterList.addFilter(singleColumnValueExcludeFilter);
+        //以楼盘编号为过滤器，选出所有的手机号码，然后再去查他们的画像
+        List<assc> esateAssc = basequery.getEsateAssc(esateCode, filterList);
+        String phones = "";
+        for (assc ac : esateAssc) {
+            String intention_tel = ac.getIntention_tel();
+            phones = phones + intention_tel + "|";
+        }
+        if (!phones.isEmpty()) {
+            Map<String, Object> usrLabelInfo = getUsrLabelInfo(date, phones);
+            return usrLabelInfo;
+        }
+        return Maps.newHashMap();
+    }
+
+    @Override
+    public Object getEsateInfo(String date, String EsateCode) {
+        FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+        RowFilter rf = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(date));
+        filterList.addFilter(rf);
+        SubstringComparator cpmparator = new SubstringComparator(EsateCode);
+        SingleColumnValueExcludeFilter singleColumnValueExcludeFilter = new SingleColumnValueExcludeFilter("bas".getBytes(), "house_code".getBytes(), CompareFilter.CompareOp.EQUAL, cpmparator);
+        filterList.addFilter(singleColumnValueExcludeFilter);
+        basequery.getEsateBas(EsateCode, filterList)
+
+
         return null;
     }
 
@@ -207,6 +235,7 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
     @Override
     public Map<String, Object> getUserAttrDTO(List<attr> attrEnitys) throws JSONException {
         Map<String, Object> ReturnMap = Maps.newLinkedHashMap();
+        //便利用户详细，然后在转换为DTO
         for (attr attrEnity : attrEnitys) {
             HashMap<String, Object> returnMap = Maps.newHashMap();
             String age = attrEnity.getAge();
@@ -361,6 +390,7 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         RowFilter rf = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(date));
         filterList.addFilter(rf);
+        //获取电话号码列表
         List<assc> esateAssc = basequery.getEsateAssc(esateCode, filterList);
         Map<String, Object> ownerpoimap = Maps.newHashMap();
         Map<String, Object> internmap = Maps.newHashMap();
@@ -397,6 +427,7 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         RowFilter rf = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(date));
         filterList.addFilter(rf);
+        //获取房产附近的电话号码
         List<assc> esateAssc = basequery.getEsateAssc(esateCode, filterList);
         Map<String, Object> ownerpoimap = Maps.newHashMap();
         Map<String, Object> internmap = Maps.newHashMap();

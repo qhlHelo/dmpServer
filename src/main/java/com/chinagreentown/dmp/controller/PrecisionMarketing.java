@@ -3,12 +3,7 @@ package com.chinagreentown.dmp.controller;
 import com.chinagreentown.dmp.Cache.SystemCache;
 import com.chinagreentown.dmp.Constant.Result;
 import com.chinagreentown.dmp.pojo.PeopleDto;
-import com.chinagreentown.dmp.pojo.precisionmarketing.BasicInfo;
-import com.chinagreentown.dmp.pojo.precisionmarketing.CNetwork;
-import com.chinagreentown.dmp.pojo.precisionmarketing.FixedNetwork;
-import com.chinagreentown.dmp.pojo.precisionmarketing.Shopping;
-import com.chinagreentown.dmp.pojo.precisionmarketing.UserPortrait;
-import com.chinagreentown.dmp.pojo.precisionmarketing.Purchase;
+import com.chinagreentown.dmp.pojo.precisionmarketing.*;
 import com.chinagreentown.dmp.service.PrecisionMarketingService;
 import com.chinagreentown.dmp.service.QueryService;
 import com.chinagreentown.dmp.util.BeanUtil;
@@ -23,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -161,13 +155,17 @@ public class PrecisionMarketing {
 
 
     @RequestMapping(value = "/label/v1.0", method = RequestMethod.POST)
-    public ResponseEntity<Object> getUserLabel(@RequestParam(value = "phonenum") String phonenum,
+    public ResponseEntity<Object> getUserLabel(@RequestParam(value = "phonenums") String phonenum,
                                                @RequestParam(value = "date") String date,
                                                @RequestParam(value = "token") String token) {
         try {
             HashMap<String, Object> Map = Maps.newHashMap();
             if (null != phonenum && token.equals(SystemCache.getInstance().getToken()) && null != date) {
-                java.util.Map<String, Object> usrLabelInfo = marketservice.getUsrLabelInfo("0328", BeanUtil.getRegexPhoneNums(phonenum));
+                String regexPhoneNums = BeanUtil.getRegexPhoneNums(phonenum);
+                if (regexPhoneNums.isEmpty()) {
+                    regexPhoneNums = phonenum.replace(",", "|");
+                }
+                java.util.Map<String, Object> usrLabelInfo = marketservice.getUsrLabelInfo(date, regexPhoneNums);
                 if (usrLabelInfo.isEmpty()) {
                     return ResponseEntity.ok(Result.SuccessEmpty());
                 }

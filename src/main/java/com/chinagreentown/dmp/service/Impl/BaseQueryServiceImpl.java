@@ -7,6 +7,7 @@ import com.chinagreentown.dmp.pojo.UsrBasAttrPojo.attr;
 import com.chinagreentown.dmp.pojo.UsrCNetBhvrPojo.bhvr;
 import com.chinagreentown.dmp.pojo.UsrPoiInfoPojo.poi;
 import com.chinagreentown.dmp.pojo.este_info.assc;
+import com.chinagreentown.dmp.pojo.este_info.bas;
 import com.chinagreentown.dmp.service.BaseQueryService;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.Filter;
@@ -113,6 +114,15 @@ public class BaseQueryServiceImpl implements BaseQueryService {
         scan.addFamily(Bytes.toBytes("assc"));
         List<assc> asscs = hbaseservice.find(este_info, scan, new esateInfoAsscMapper());
         return asscs;
+    }
+
+    @Override
+    public List<bas> getEsateBas(String esateCode, FilterList list) {
+        can scan = new Scan();
+        scan.setFilter(list);
+        scan.addFamily(Bytes.toBytes("bas"));
+        List<bas> bass = hbaseservice.find(este_info, scan, new esteInfoBasMapper());
+        return bass;
     }
 
 

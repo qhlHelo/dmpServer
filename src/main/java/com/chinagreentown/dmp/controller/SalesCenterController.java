@@ -88,8 +88,7 @@ public class SalesCenterController {
             if (token.equals("test") && null != phonebrand && null != salescenterid && null != time && null != macaddress) {
                 BaseInfo baseInfo = new BaseInfo();
                 if (null == phonenum || phonenum.isEmpty()) {
-                    int a = phonebrand.length() * 199;
-                    phonenum = FakeData.getPhoneList().get(a % 5);
+                    return ResponseEntity.ok(Result.SuccessEmpty());
                 }
                 String ma5Phone = FakeData.getMa5Phone(phonenum);
                 if (!ma5Phone.isEmpty()) {
@@ -166,8 +165,7 @@ public class SalesCenterController {
             if (token.equals("test") && null != platenum && null != salescenterid && null != time) {
                 BaseInfo baseInfo = new BaseInfo();
                 if (null == phonenum || phonenum.isEmpty()) {
-                    int a = platenum.length() * 199;
-                    phonenum = FakeData.getPhoneList().get(a % 5);
+                    return ResponseEntity.ok(Result.SuccessEmpty());
                 }
                 String ma5Phone = FakeData.getMa5Phone(phonenum);
                 if (!ma5Phone.isEmpty()) {
