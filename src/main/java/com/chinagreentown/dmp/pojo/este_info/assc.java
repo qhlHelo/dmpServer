@@ -5,13 +5,24 @@ package com.chinagreentown.dmp.pojo.este_info;
  */
 public class assc {
 
+    //行名字
+    private String rowName;
+    //关联的成交用户
     private String buy_cus;
-
+    //关联的意向用户手机号
     private String intention_tel;
-
+    //关联的音箱用户 宽带账号
     private String intention_bd;
-
+    //关联的竞品楼盘
     private String compatible_pro;
+
+    public String getRowName() {
+        return rowName;
+    }
+
+    public void setRowName(String rowName) {
+        this.rowName = rowName;
+    }
 
     public String getBuy_cus() {
         return buy_cus;

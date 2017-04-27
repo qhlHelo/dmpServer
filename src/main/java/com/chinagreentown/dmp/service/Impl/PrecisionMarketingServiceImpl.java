@@ -4,9 +4,12 @@ import com.chinagreentown.dmp.Cache.SystemCache;
 import com.chinagreentown.dmp.pojo.UsrBasAttrPojo.attr;
 import com.chinagreentown.dmp.pojo.UsrCNetBhvrPojo.bhvr;
 import com.chinagreentown.dmp.pojo.UsrPoiInfoPojo.poi;
+import com.chinagreentown.dmp.pojo.este_info.assc;
 import com.chinagreentown.dmp.service.BaseQueryService;
 import com.chinagreentown.dmp.service.PrecisionMarketingService;
 import com.chinagreentown.dmp.util.BeanUtil;
+import com.chinagreentown.dmp.util.FakeData;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -16,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by yun on 2017/4/17.
@@ -96,28 +96,44 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
     }
 
     @Override
-    public Map<String, Object> getLivePlace(String date, String phoneNum) {
-        ByteArrayComparable comparator = new RegexStringComparator(BeanUtil.getRegexPhoneNums(phoneNum));
+    public Map<String, Object> getLivePlace(String date, String phoneNum, String bdaccount) {
         RowFilter rf = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(date));
         FilterList locationFlilters = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         locationFlilters.addFilter(rf);
-        SingleColumnValueFilter locationFilter = new SingleColumnValueFilter("poi".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, comparator);
-        locationFlilters.addFilter(locationFilter);
+        if (phoneNum != null) {
+            ByteArrayComparable comparator = new RegexStringComparator(phoneNum);
+            SingleColumnValueFilter locationFilter = new SingleColumnValueFilter("poi".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, comparator);
+            locationFlilters.addFilter(locationFilter);
+        }
+        if (bdaccount != null) {
+            ByteArrayComparable comparator = new RegexStringComparator(bdaccount);
+            SingleColumnValueFilter locationFilter = new SingleColumnValueFilter("poi".getBytes(), "bd_account".getBytes(), CompareFilter.CompareOp.EQUAL, comparator);
+            locationFlilters.addFilter(locationFilter);
+        }
+
         List<poi> pois = basequery.getUsrPoiInfo("poi", "p_live", locationFlilters);//获取位置信息数据
-        return this.getUsrPoiInfoWork(pois);
+        return this.getUsrPoiInfoLive(pois);
     }
 
     @Override
-    public Map<String, Object> getWorkPlace(String date, String phoneNum) {
-        ByteArrayComparable comparator = new RegexStringComparator(BeanUtil.getRegexPhoneNums(phoneNum));
+    public Map<String, Object> getWorkPlace(String date, String phoneNum, String bdaccount) {
         RowFilter rf = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(date));
         FilterList locationFlilters = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         locationFlilters.addFilter(rf);
-        SingleColumnValueFilter locationFilter = new SingleColumnValueFilter("poi".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, comparator);
-        locationFlilters.addFilter(locationFilter);
+        if (phoneNum != null) {
+            ByteArrayComparable comparator = new RegexStringComparator(phoneNum);
+            SingleColumnValueFilter locationFilter = new SingleColumnValueFilter("poi".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, comparator);
+            locationFlilters.addFilter(locationFilter);
+        }
+        if (bdaccount != null) {
+            ByteArrayComparable comparator = new RegexStringComparator(bdaccount);
+            SingleColumnValueFilter locationFilter = new SingleColumnValueFilter("poi".getBytes(), "bd_account".getBytes(), CompareFilter.CompareOp.EQUAL, comparator);
+            locationFlilters.addFilter(locationFilter);
+        }
         List<poi> pois = basequery.getUsrPoiInfo("poi", "p_work", locationFlilters);//获取位置信息数据
-        return this.getUsrPoiInfoLive(pois);
+        return this.getUsrPoiInfoWork(pois);
     }
+
 
     @Override
     public Object getEsateMicro(String date, String esateCode) {
@@ -126,7 +142,6 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
         filterList.addFilter(rf);
         SubstringComparator cpmparator = new SubstringComparator("wu");
         new SingleColumnValueExcludeFilter("attr".getBytes(), "encryption_tel".getBytes(), CompareFilter.CompareOp.EQUAL, cpmparator);
-
         return null;
     }
 
@@ -147,9 +162,11 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
                         if (null != map && !map.isEmpty()) {
                             Set<String> strs = map.keySet();
                             int size = strs.size();
+                            //取出第一个
                             String max = map.get("0" + size);
                             Map<String, Object> ObjectMap = Maps.newHashMap();
                             BeanUtil.json2Map(new JSONObject(max), ObjectMap);
+                            //取出最后一个
                             String min = map.get("0" + 1);
                             BeanUtil.json2Map(new JSONObject(min), ObjectMap);
                             objectObjectHashMap.put(s, ObjectMap);
@@ -208,8 +225,8 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
                 Map<String, String> districtMap = SystemCache.getInstance().getUsrBasMap(district);
                 returnMap.put(district, BeanUtil.jsonMap2map(districtMap));
             }
-            if(rowName!=null){
-                returnMap.put("rowName",rowName);
+            if (rowName != null) {
+                returnMap.put("rowName", rowName);
             }
             ReturnMap.put(attrEnity.getEncryption_tel(), returnMap);
         }
@@ -335,13 +352,78 @@ public class PrecisionMarketingServiceImpl implements PrecisionMarketingService 
     }
 
     @Override
-    public Map<String, Object> getEsateUsersPOIWork(String esateCode) {
-        return null;
+    public Map<String, Object> getEsateUsersPOIWork(String date, String esateCode) {
+        Map<String, Object> returnMap = Maps.newHashMap();
+        String houseKey = FakeData.getHouseKey(esateCode);
+        if (houseKey == null) {
+            return Maps.newHashMap();
+        }
+        FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+        RowFilter rf = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(date));
+        filterList.addFilter(rf);
+        List<assc> esateAssc = basequery.getEsateAssc(esateCode, filterList);
+        Map<String, Object> ownerpoimap = Maps.newHashMap();
+        Map<String, Object> internmap = Maps.newHashMap();
+        for (assc assc : esateAssc) {
+            if (assc.getBuy_cus() != null) {
+                String buy_cus = assc.getBuy_cus();
+                Map<String, Object> workPlace = this.getWorkPlace(date, buy_cus, null);
+                ownerpoimap.putAll(workPlace);
+                continue;
+            } else if (assc.getIntention_tel() != null) {
+                String intention_tel = assc.getIntention_tel();
+                Map<String, Object> workPlace = this.getWorkPlace(date, intention_tel, null);
+                internmap.putAll(workPlace);
+                continue;
+            } else if (assc.getIntention_bd() != null) {
+                String intention_bd = assc.getIntention_bd();
+                Map<String, Object> workPlace = this.getWorkPlace(date, null, intention_bd);
+                internmap.putAll(workPlace);
+                continue;
+            }
+        }
+        returnMap.put("owner", ownerpoimap);
+        returnMap.put("intentUser", internmap);
+        return returnMap;
     }
 
     @Override
-    public Map<String, Object> getEsateUserPOILive(String esateCode) {
-        return null;
+    public Map<String, Object> getEsateUserPOILive(String date, String esateCode) {
+        Map<String, Object> returnMap = Maps.newHashMap();
+        String houseKey = FakeData.getHouseKey(esateCode);
+        if (houseKey == null) {
+            return Maps.newHashMap();
+        }
+        FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+        RowFilter rf = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(date));
+        filterList.addFilter(rf);
+        List<assc> esateAssc = basequery.getEsateAssc(esateCode, filterList);
+        Map<String, Object> ownerpoimap = Maps.newHashMap();
+        Map<String, Object> internmap = Maps.newHashMap();
+        for (assc assc : esateAssc) {
+            if (assc.getBuy_cus() != null) {
+                //如果是成交用户跳出
+                String buy_cus = assc.getBuy_cus();
+                Map<String, Object> workPlace = this.getLivePlace(date, buy_cus, null);
+                ownerpoimap.putAll(workPlace);
+                continue;
+            } else if (assc.getIntention_tel() != null) {
+                //如果是意向用户手机号跳出
+                String intention_tel = assc.getIntention_tel();
+                Map<String, Object> workPlace = this.getLivePlace(date, intention_tel, null);
+                internmap.putAll(workPlace);
+                continue;
+            } else if (assc.getIntention_bd() != null) {
+                //如果是意向用户宽带账号 跳出
+                String intention_bd = assc.getIntention_bd();
+                Map<String, Object> workPlace = this.getLivePlace(date, null, intention_bd);
+                internmap.putAll(workPlace);
+                continue;
+            }
+        }
+        returnMap.put("owner", ownerpoimap);
+        returnMap.put("intentUser", internmap);
+        return returnMap;
     }
 
     @Override

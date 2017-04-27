@@ -5,6 +5,9 @@ package com.chinagreentown.dmp.pojo.este_info;
  */
 public class bas {
 
+    //行名称
+    private String rowName;
+
     //楼盘名字
     private String house_name;
 
@@ -40,6 +43,16 @@ public class bas {
 
     //特色
     private String feature;
+
+
+    public String getRowName() {
+        return rowName;
+    }
+
+    public void setRowName(String rowName) {
+        this.rowName = rowName;
+    }
+
 
     public String getHouse_name() {
         return house_name;

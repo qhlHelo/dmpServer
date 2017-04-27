@@ -127,10 +127,8 @@ public class PrecisionMarketing {
                                                  @RequestParam(value = "date") String date) {
         try {
             if (null != estatecode && token.equals("test") && null != date) {
-                if (FakeData.isNum(estatecode)) {
-                    Map<String, String> liveMaps = queryService.getworkMaps(Integer.parseInt(estatecode));
-                    return ResponseEntity.ok(liveMaps);
-                }
+                Map<String, Object> esateUserPOILive = marketservice.getEsateUsersPOIWork(date, estatecode);
+                return ResponseEntity.ok(esateUserPOILive);
             }
             HashMap<String, String> Map = Maps.newHashMap();
             Map.put("Reason", FakeData.HttpStr.PARAMETERERROR.toString());
@@ -148,10 +146,9 @@ public class PrecisionMarketing {
                                                @RequestParam(value = "date") String date) {
         try {
             if (null != estatecode && token.equals("test") && null != date) {
-                if (FakeData.isNum(estatecode)) {
-                    Map<String, String> liveMaps = queryService.getLiveMaps(Integer.parseInt(estatecode));
-                    return ResponseEntity.ok(liveMaps);
-                }
+                Map<String, Object> esateUserPOILive = marketservice.getEsateUserPOILive(date, estatecode);
+                return ResponseEntity.ok(esateUserPOILive);
+
             }
             HashMap<String, String> Map = Maps.newHashMap();
             Map.put("Reason", FakeData.HttpStr.PARAMETERERROR.toString());
@@ -192,7 +189,7 @@ public class PrecisionMarketing {
      * @param token
      * @return
      */
-    @RequestMapping(value = "/revently/v1.0", method = RequestMethod.GET)
+    @RequestMapping(value = "/revently/v1.0", method = RequestMethod.POST)
     public ResponseEntity<Object> revently(@RequestParam(value = "date", required = false) String date,
                                            @RequestParam(value = "lastkey", required = false) String lastkey,
                                            @RequestParam(value = "pageSize") Integer pageSize,

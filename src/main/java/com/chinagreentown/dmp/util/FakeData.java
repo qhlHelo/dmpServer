@@ -2,7 +2,6 @@ package com.chinagreentown.dmp.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import sun.rmi.log.LogInputStream;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -27,7 +26,6 @@ public class FakeData {
             return this.value;
         }
     }
-
 
 
     public enum LabelKey {
@@ -122,6 +120,8 @@ public class FakeData {
 
     public final static ArrayList<String> specialList = Lists.newArrayList("近地铁", "学区", "高端住宅", "交通便利", "现房");
 
+    private static Map<String, String> houseMap = null;
+
 
     public enum house {
         house1("GU0040030101130001", "越秀星汇城住宅"), house2("GU0040030101130002", "美丽湾住宅"), house3("GU0040030101130003", "德信早安住宅"), house4("GU0040030101130004", "中港罗兰小镇住宅"), house5("GU0040030101130005", "雅居乐国际花园住宅");
@@ -145,8 +145,26 @@ public class FakeData {
     }
 
 
+    public static String getHouseKey(String key) {
+        if (houseMap == null) {
+            houseMap = setHouseMap();
+        }
+
+        return houseMap.get(key);
+    }
+
+    private static Map<String, String> setHouseMap() {
+        Map<String, String> map = Maps.newHashMap();
+        map.put("杨柳郡", "4003010113001");
+        map.put("杭州绿园", "4003010113002");
+        map.put("杭州春江花月", "4003010113003");
+        map.put("杭州紫桂花园", "4003010113004");
+        map.put("杭州兰桂花园", "4003010113005");
+        return map;
+    }
+
     public static <E> E getE(List<E> list, int code) {
-        return list.get(code%list.size());
+        return list.get(code % list.size());
     }
 
 

@@ -6,6 +6,7 @@ import com.chinagreentown.dmp.pojo.ComInfoPojo.com;
 import com.chinagreentown.dmp.pojo.UsrBasAttrPojo.attr;
 import com.chinagreentown.dmp.pojo.UsrCNetBhvrPojo.bhvr;
 import com.chinagreentown.dmp.pojo.UsrPoiInfoPojo.poi;
+import com.chinagreentown.dmp.pojo.este_info.assc;
 import com.chinagreentown.dmp.service.BaseQueryService;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.Filter;
@@ -34,6 +35,8 @@ public class BaseQueryServiceImpl implements BaseQueryService {
     private final static String USERATTR = "usr_bas_attr";
     //net爱好
     private final static String usr_c_net_bhvr = "usr_c_net_bhvr";
+    //楼盘表
+    private final static String este_info = "este_info";
 
     @Override
     public List<com> getUsrCom(String family, FilterList list) {
@@ -82,7 +85,6 @@ public class BaseQueryServiceImpl implements BaseQueryService {
     }
 
 
-
     @Override
     public List<bhvr> getUsrBhvr(String family, FilterList list) {
         Scan scan = new Scan();
@@ -98,13 +100,20 @@ public class BaseQueryServiceImpl implements BaseQueryService {
         Scan scan = new Scan();
         scan.setFilter(pageFilter);
         List<String> strings = hbaseservice.find(tableName, scan, new RowNameMapper());
-        if(null!=strings){
+        if (null != strings) {
             return strings.get(0);
         }
         return "";
     }
 
-
+    @Override
+    public List<assc> getEsateAssc(String esateCode, FilterList list) {
+        Scan scan = new Scan();
+        scan.setFilter(list);
+        scan.addFamily(Bytes.toBytes("assc"));
+        List<assc> asscs = hbaseservice.find(este_info, scan, new esateInfoAsscMapper());
+        return asscs;
+    }
 
 
 }
